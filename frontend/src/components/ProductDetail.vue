@@ -40,6 +40,7 @@
           <button type="button" class="btn-edit-nop" v-on:click="cancelEdit()">取消</button>
           <button type="button" class="btn-edit-yap" v-on:click="save(newProduct)">確認</button>
         </div>
+        
       </div>
       
     </div>
@@ -100,6 +101,7 @@
     max-width: 100%;
     margin: 20px auto;
   }
+  
   .edit-field {
     width: 40%;
     margin-bottom: 16px;

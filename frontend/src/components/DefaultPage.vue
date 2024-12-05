@@ -1,11 +1,11 @@
-  <template>
-    <header id="upperDefault">{{ pageTitle }}</header>
-    <div id="content"></div>
-  </template>
-  
-  <script setup>
-    defineProps(['pageTitle']);
-  </script>
+<template>
+  <header id="upperDefault">{{ pageTitle }}</header>
+  <div id="content"></div>
+</template>
+
+<script setup>
+defineProps(['pageTitle']);
+</script>
   
   <style>
   #upperDefault {

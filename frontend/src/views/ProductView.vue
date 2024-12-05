@@ -1,88 +1,47 @@
 <template>
-  <div id="app">
-    <DefaultPage :pageTitle="'商品修改'" />
-    <ProductList :products="products"
-    :selectedProduct="selectedProduct" 
-    :disabled="selectedProduct !== null"
-    @view-detail="viewDetail" />
-    <ProductDetail id="detail" v-if="selectedProduct" 
-    :product="selectedProduct" 
-    @close="closeDetail" @saveData="saveData"/>
+  <div>
+    <DefaultPage :pageTitle="'商品管理'" />
+    <ProductList :products="products" @view-detail="viewDetail" />
+    <ProductDetail
+      v-if="selectedProduct"
+      :product="selectedProduct"
+      @close="closeDetail"
+      @saveData="saveProduct"
+    />
   </div>
 </template>
 
 <script>
-import ProductList from '../components/ProductList.vue';
-import ProductDetail from '../components/ProductDetail.vue';
-import DefaultPage from '../components/DefaultPage.vue';
+import axios from "axios";
+import ProductList from "../components/ProductList.vue";
+import ProductDetail from "../components/ProductDetail.vue";
+import DefaultPage from "../components/DefaultPage.vue";
 
 export default {
-  components: {
-    ProductList,
-    ProductDetail,
-    DefaultPage,
-  },
+  components: { ProductList, ProductDetail, DefaultPage },
   data() {
     return {
-      products: [/*從資料庫農取*/
-        {
-          id: 1,
-          name: '巧克力',
-          image: 'https://via.placeholder.com/150',
-          price: 50,
-          category: '屁眼',
-          stock: 10,
-          salesVolume: 0,
-        },
-        {
-          id: 2,
-          name: '巧克力',
-          image: 'https://via.placeholder.com/150',
-          price: 50,
-          category: '屁眼',
-          stock: 10,
-          salesVolume: 0,
-        },
-        {
-          id: 3,
-          name: '巧克力',
-          image: 'https://via.placeholder.com/150',
-          price: 50,
-          category: '屁眼',
-          stock: 10,
-          salesVolume: 0,
-        },
-        {
-          id: 4,
-          name: '巧克力',
-          image: 'https://via.placeholder.com/150',
-          price: 50,
-          category: '屁眼',
-          stock: 10,
-          salesVolume: 0,
-        },
-        {
-          id: 5,
-          name: '巧克力',
-          image: 'https://via.placeholder.com/150',
-          price: 50,
-          category: '屁眼',
-          stock: 10,
-          salesVolume: 0,
-        },
-        {
-          id: 6,
-          name: '巧克力',
-          image: 'https://via.placeholder.com/150',
-          price: 50,
-          category: '屁眼',
-          stock: 10,
-          salesVolume: 0,
-        },
-      ],
+      products: [],
       selectedProduct: null,
     };
   },
+  async mounted() {
+  try {
+    const response = await axios.get("http://localhost/mytest/products");
+    // 映射字段名
+    this.products = response.data.map(product => ({
+      id: product.ProductID,
+      name: product.ProductName,
+      image: "https://via.placeholder.com/150", // 默認圖片
+      category: product.Category,
+      price: product.Price,
+      stock: product.Stock,
+      salesVolume: product.SaleVolume
+    }));
+  } catch (error) {
+    console.error("獲取商品失敗：", error);
+  }
+},
   methods: {
     viewDetail(product) {
       this.selectedProduct = product;
@@ -90,20 +49,20 @@ export default {
     closeDetail() {
       this.selectedProduct = null;
     },
-    saveData(data){
-      const index = this.products.findIndex(product => product.id === data.id);
-      if (index !== -1) {
-        this.products[index] = JSON.parse(JSON.stringify(data)); 
-        this.selectedProduct = { ...data };
-        console.log('修改成功：', this.products[index]);
-      } else {
-        console.log('修改失敗，找不到對應的產品');
+    async saveProduct(updatedProduct) {
+      try {
+        await axios.put(`http://localhost/mytest/products/${updatedProduct.id}`, updatedProduct);
+        const index = this.products.findIndex((p) => p.id === updatedProduct.id);
+        if (index !== -1) this.products.splice(index, 1, updatedProduct);
+      } catch (error) {
+        console.error("保存商品失敗：", error);
       }
-      /*寫回資料庫*/ 
-    }
+    },
   },
 };
 </script>
+
+
 
 <style>
 #app {
