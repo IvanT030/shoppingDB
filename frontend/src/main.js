@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import App from './views/ProductView.vue'
+import App from './views/BranchView.vue'
 
 const app = createApp(App)
 

@@ -101,6 +101,7 @@
     max-width: 100%;
     margin: 20px auto;
   }
+  
   .edit-field {
     width: 40%;
     margin-bottom: 16px;
