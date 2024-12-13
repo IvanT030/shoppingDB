@@ -11,58 +11,55 @@
   </div>
 </template>
 
-<script>
-import axios from "axios";
-import ProductList from "../components/ProductList.vue";
-import ProductDetail from "../components/ProductDetail.vue";
-import DefaultPage from "../components/DefaultPage.vue";
+<script setup>
+  import { ref, onMounted } from 'vue';
+  import axios from 'axios';
+  import DefaultPage from '@/components/DefaultPage.vue';
+  import ProductList from '@/components/ProductList.vue';
+  import ProductDetail from '@/components/ProductDetail.vue';
 
-export default {
-  components: { ProductList, ProductDetail, DefaultPage },
-  data() {
-    return {
-      products: [],
-      selectedProduct: null,
-    };
-  },
-  async mounted() {
-  try {
-    const response = await axios.get("http://localhost/mytest/products");
-    // 映射字段名
-    this.products = response.data.map(product => ({
-      id: product.ProductID,
-      name: product.ProductName,
-      image: "https://via.placeholder.com/150", // 默認圖片
-      category: product.Category,
-      price: product.Price,
-      stock: product.Stock,
-      salesVolume: product.SaleVolume
-    }));
-  } catch (error) {
-    console.error("獲取商品失敗：", error);
+  const products = ref([]);
+  const selectedProduct = ref(null);
+
+  /*出問題了 沒辦法拿資料*/
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost/mytest/products");
+      console.log(response)
+      products = response.data.map(product => ({
+        id: product.ProductID,
+        name: product.ProductName,
+        image: "https://via.placeholder.com/150",
+        category: product.Category,
+        price: product.Price,
+        stock: product.Stock,
+        salesVolume: product.SaleVolume
+      }));
+    } catch (error) {
+      console.error('获取商品失败:', error);
+    }
   }
-},
-  methods: {
-    viewDetail(product) {
-      this.selectedProduct = product;
-    },
-    closeDetail() {
-      this.selectedProduct = null;
-    },
-    async saveProduct(updatedProduct) {
-      try {
-        await axios.put(`http://localhost/mytest/products/${updatedProduct.id}`, updatedProduct);
-        const index = this.products.findIndex((p) => p.id === updatedProduct.id);
-        if (index !== -1) this.products.splice(index, 1, updatedProduct);
-      } catch (error) {
-        console.error("保存商品失敗：", error);
-      }
-    },
-  },
-};
+
+  onMounted(fetchProducts);
+
+  const viewDetail = (product) => {
+    selectedProduct.value = product;
+  };
+
+  const closeDetail = () => {
+    selectedProduct.value = null;
+  };
+
+  const saveProduct = async (updatedProduct) => {
+    try {
+      await axios.put(`http://localhost/mytest/products/${updatedProduct.id}`, updatedProduct);
+      const index = products.value.findIndex((p) => p.id === updatedProduct.id);
+      if (index !== -1) products.value.splice(index, 1, updatedProduct);
+    } catch (error) {
+      console.error('保存商品失败:', error);
+    }
+  };
 </script>
-
-
 
 <style>
 #app {

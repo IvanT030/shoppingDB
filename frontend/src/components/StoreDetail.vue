@@ -1,32 +1,33 @@
 <template>
-    <div class="store-detail">
-      <button class="back-button" @click="emit('closeDetail')"> 回分店頁面 </button>
-      <div class="store-card">
-        <h1>{{ display.StoreName }}</h1>
-        <p>電話: {{ display.StoreNumber }}</p>
-        <p>分店城市: {{ display.City }}</p>
-        <div class="button-group">
-          <button class="action-button"> 查看進貨清單 </button>
-          <button class="action-button"> 修改商品 </button>
-        </div>
+  <div class="store-detail">
+    <button class="back-button" @click="$emit('closeDetail')"> 回分店頁面 </button>
+    <div class="store-card">
+      <h1>{{ display.StoreName }}</h1>
+      <p>電話: {{ display.StoreNumber }}</p>
+      <p>分店城市: {{ display.City }}</p>
+      <div class="button-group">
+        <button class="action-button" @click="$emit('goPurchaseView',display.StoreID)"> 查看進貨清單 </button>
+        <button class="action-button" @click="$emit('goProductView',display.StoreID)"> 修改商品 </button>
       </div>
     </div>
-  </template>
+  </div>
+</template>
   
-  <script setup>
+<script setup>
   import { defineProps, defineEmits } from 'vue';
   
-  const emit = defineEmits(['closeDetail']);
-  
+  const emit = defineEmits(['closeDetail', 'goProductView', 'goPurchaseView']);
+
   const props = defineProps({
     display: {
       type: Object,
       default: false,
     },
   });
-  </script>
+
+</script>
   
-  <style scoped>
+<style scoped>
   .store-detail {
     display: flex;
     flex-direction: column;
@@ -92,5 +93,5 @@
   .action-button:hover {
     background-color: #27ae60;
   }
-  </style>
+</style>
   

@@ -36,8 +36,8 @@
   
   <style>
   .product-list.disabled {
-    pointer-events: none; /* 禁止鼠標事件 */
-    opacity: 0.6;         /* 可視化顯示禁用狀態 */
+    pointer-events: none;
+    opacity: 0.6;
   }
   
   .product-list {
