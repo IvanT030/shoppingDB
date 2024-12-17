@@ -19,79 +19,56 @@
   </div>
 </template>
 
-<script>
-import axios from "axios";
-import ProductList from "../components/ProductList.vue";
-import ProductDetail from "../components/ProductDetail.vue";
-import DefaultPage from "../components/DefaultPage.vue";
+<script setup>
+  import { ref, onMounted } from 'vue';
+  import axios from 'axios';
+  import DefaultPage from '@/components/DefaultPage.vue';
+  import ProductList from '@/components/ProductList.vue';
+  import ProductDetail from '@/components/ProductDetail.vue';
 
-export default {
-  components: {
-    ProductList,
-    ProductDetail,
-    DefaultPage,
-  },
-  data() {
-    return {
-      products: [],          // 商品列表數據
-      selectedProduct: null, // 當前選中的商品
-    };
-  },
-  async mounted() {
-    // 組件掛載時從後端獲取商品列表
-    await this.fetchProducts();
-  },
-  methods: {
-    // 從後端獲取商品列表
-    async fetchProducts() {
-      try {
-        const response = await axios.get("http://localhost/mytest/products");
-        // 從後端回傳的數據映射成前端使用的格式
-        this.products = response.data.map(product => ({
-          id: product.ProductID,
-          name: product.ProductName,
-          image: "https://via.placeholder.com/150", // 預設圖片
-          category: product.Category,
-          price: product.Price,
-          stock: product.Stock,
-          salesVolume: product.SaleVolume,
-        }));
-      } catch (error) {
-        console.error("獲取商品失敗：", error);
-      }
-    },
-    // 顯示商品詳細資訊
-    viewDetail(product) {
-      this.selectedProduct = product;
-    },
-    // 關閉商品詳細資訊視窗
-    closeDetail() {
-      this.selectedProduct = null;
-    },
-    // 保存修改後的商品資訊
-    async saveProduct(updatedProduct) {
-      try {
-        // 將修改後的商品資訊提交給後端
-        await axios.put(`http://localhost/mytest/products/${updatedProduct.id}`, updatedProduct);
+  const products = ref([]);
+  const selectedProduct = ref(null);
 
-        // 更新本地商品列表
-        const index = this.products.findIndex(p => p.id === updatedProduct.id);
-        if (index !== -1) {
-          this.products.splice(index, 1, updatedProduct);
-        }
+  /*出問題了 沒辦法拿資料*/
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost/mytest/products");
+      console.log(response)
+      products = response.data.map(product => ({
+        id: product.ProductID,
+        name: product.ProductName,
+        category: product.Category,
+        price: product.Price,
+        stock: product.Stock,
+        salesVolume: product.SaleVolume
+      }));
+    } catch (error) {
+      console.error('获取商品失败:', error);
+    }
+  }
 
-        // 關閉詳細資訊視窗
-        this.closeDetail();
-      } catch (error) {
-        console.error("保存商品失敗：", error);
-      }
-    },
-  },
-};
+  onMounted(fetchProducts);
+
+  const viewDetail = (product) => {
+    selectedProduct.value = product;
+  };
+
+  const closeDetail = () => {
+    selectedProduct.value = null;
+  };
+
+  const saveProduct = async (updatedProduct) => {
+    try {
+      await axios.put(`http://localhost/mytest/products/${updatedProduct.id}`, updatedProduct);
+      const index = products.value.findIndex((p) => p.id === updatedProduct.id);
+      if (index !== -1) products.value.splice(index, 1, updatedProduct);
+    } catch (error) {
+      console.error('保存商品失败:', error);
+    }
+  };
 </script>
 
-<style scoped>
-/* 全局樣式 */
+<style>
 #app {
   font-family: Arial, sans-serif;
   text-align: center;

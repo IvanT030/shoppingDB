@@ -1,49 +1,47 @@
 <template>
-    <div class="product-detail">
-      <button type="button" class="btn-close" v-on:click="closeDetail()"> X </button>
-      
-      <div v-if="!editing">
-        <h2>{{ product.name }}</h2>
-        <img :src="product.image" alt="商品圖片" />
-        <p>分類：{{ product.category }}</p>
-        <p>價格：{{ product.price }} 元</p>
-        <p>庫存：{{ product.stock }}</p>
-        <p>銷售量：{{ product.salesVolume }}</p>
-        <button type="button" class="btn-edit" v-on:click="edit()"> 修改 </button>
-      </div>
-
-      <div v-else class="edit-container">
-        <div class="edit-field">
-          <label>商品名稱：</label>
-          <input type="text" v-model="newProduct.name" />
-        </div>
-        <div class="edit-field">
-          <img :src="newProduct.image" alt="商品圖片" />
-        </div>
-        <div class="edit-field">
-          <label>分類：</label>
-          <input type="text" v-model="newProduct.category" />
-        </div>
-        <div class="edit-field">
-          <label>價格：</label>
-          <input type="number" v-model="newProduct.price" /> 元
-        </div>
-        <div class="edit-field">
-          <label>庫存：</label>
-          <input type="number" v-model="newProduct.stock" />
-        </div>
-        <div class="edit-field">
-          <label>銷售量：</label>
-          <input type="number" v-model="newProduct.salesVolume" />
-        </div>
-        <div class="edit-buttons">
-          <button type="button" class="btn-edit-nop" v-on:click="cancelEdit()">取消</button>
-          <button type="button" class="btn-edit-yap" v-on:click="save(newProduct)">確認</button>
-        </div>
-        
-      </div>
-      
+  <div class="product-detail">
+    <button type="button" class="btn-close" v-on:click="closeDetail()"> X </button>
+    
+    <div v-if="!editing">
+      <h2>{{ product.name }}</h2>
+      <img :src="product.image" alt="商品圖片" />
+      <p>分類：{{ product.category }}</p>
+      <p>價格：{{ product.price }} 元</p>
+      <p>庫存：{{ product.stock }}</p>
+      <p>銷售量：{{ product.salesVolume }}</p>
+      <button type="button" class="btn-edit" v-on:click="edit()"> 修改 </button>
     </div>
+
+    <div v-else class="edit-container">
+      <div class="edit-field">
+        <label>商品名稱：</label>
+        <input type="text" v-model="newProduct.name" />
+      </div>
+      <div class="edit-field">
+        <img :src="newProduct.image" alt="商品圖片" />
+      </div>
+      <div class="edit-field">
+        <label>分類：</label>
+        <input type="text" v-model="newProduct.category" />
+      </div>
+      <div class="edit-field">
+        <label>價格：</label>
+        <input type="number" v-model="newProduct.price" /> 元
+      </div>
+      <div class="edit-field">
+        <label>庫存：</label>
+        <input type="number" v-model="newProduct.stock" />
+      </div>
+      <div class="edit-field">
+        <label>銷售量：</label>
+        <input type="number" v-model="newProduct.salesVolume" />
+      </div>
+      <div class="edit-buttons">
+        <button type="button" class="btn-edit-nop" v-on:click="cancelEdit()">取消</button>
+        <button type="button" class="btn-edit-yap" v-on:click="save(newProduct)">確認</button>
+      </div>
+    </div>
+  </div>
 </template>
   
   <script>

@@ -68,24 +68,28 @@ onMounted(() => {
   padding-top: 140px; /* 避免與頁面標題重疊 */
 }
 
-.store-item {
-  margin: 15px 0;
-}
+  .store-container h2 {
+    font-size: 32px;
+  }
 
-.store-button {
-  padding: 15px 60px;
-  font-size: 18px;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-  text-align: center;
-}
+  .store-item {
+    margin: 15px 0;
+  }
 
-.store-button:hover {
-  transform: scale(1.05);
-  background-color: #0056b3;
-}
+  .store-button {
+    padding: 15px 60px;
+    font-size: 18px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    text-align: center;
+  }
+
+  .store-button:hover {
+    transform: scale(1.05);
+    background-color: #0056b3;
+  }
 </style>

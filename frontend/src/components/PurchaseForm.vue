@@ -1,0 +1,154 @@
+<template>
+    <div class="form-container">
+        <form @submit.prevent="handleSubmit">
+        <h2>{{ purchase?.PurchaseID ? '修改進貨記錄' : '新增進貨記錄' }}</h2>
+        <label>
+            分店編號:
+            <input v-model="form.StoreID" type="number" required />
+        </label>
+        <label>
+            分店名稱:
+            <input v-model="form.ProductID" type="number" required />
+        </label>
+        <label>
+            分店位置:
+            <input v-model="form.ProductID" type="number" required />
+        </label>
+        <label>
+            進貨數量:
+            <input v-model="form.Quantity" type="number" required />
+        </label>
+        <label>
+            進貨日期:
+            <input v-model="form.PurchaseDate" type="date" required />
+        </label>
+        <label>
+            過期日期:
+            <input v-model="form.ExpirationDate" type="date" required />
+        </label>
+        </form>
+    </div>
+</template>
+  
+<script setup>
+  import { ref, watch } from 'vue';
+
+  const props = defineProps({
+    purchase: {
+      type: Object,
+      default: null,
+    },
+  });
+  
+  const form = ref({
+    StoreID: '',
+    ProductID: '',
+    Quantity: '',
+    PurchaseDate: '',
+    ExpirationDate: '',
+  });
+  
+  watch(() => props.purchase,
+    (newValue) => {
+      if (newValue) {
+        form.value = { ...newValue };
+      } else {
+        form.value = {
+          StoreID: '',
+          ProductID: '',
+          Quantity: '',
+          PurchaseDate: '',
+          ExpirationDate: '',
+        };
+      }
+    },
+    { immediate: true }
+  );
+  
+  const handleSubmit = () => {
+    emit('save', form.value);
+  };
+</script>
+  
+<style>
+  .form-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /*永遠置中*/
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    z-index: 1000;
+    width: 400px;
+  }
+  form {
+
+    width: 100%;
+    max-width: 400px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #333;
+  }
+
+  form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  form input::placeholder {
+    font-style: italic;
+    color: #aaa;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .btn-edit-nop {
+    transition-duration: 0.4s;
+    left: 10%;
+    padding: 5px 15px;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btn-edit-nop:hover {
+    background-color: #b6b6b6;
+  }
+
+  .btn-edit-yap {
+    left: -10%;
+    transition-duration: 0.4s;
+    padding: 5px 15px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btn-edit-yap:hover {
+    background-color: #b50000;
+  }
+</style>
