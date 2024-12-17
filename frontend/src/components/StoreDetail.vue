@@ -9,7 +9,10 @@
         <button class="action-button" @click="$emit('goPurchaseView',display.StoreID)"> 查看進貨清單 </button>
         <button class="action-button" @click="$emit('goProductView',display.StoreID)"> 修改商品 </button>
       </div>
-    </div>
+      <br>
+      <h1>本店進貨最多商品</h1>
+      <p>{{mostProduct.name}}: {{mostProduct.Quantity}}件</p>
+      </div>
   </div>
 </template>
   
@@ -20,6 +23,10 @@
 
   const props = defineProps({
     display: {
+      type: Object,
+      default: false,
+    },
+    mostProduct: {
       type: Object,
       default: false,
     },

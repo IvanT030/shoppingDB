@@ -9,6 +9,11 @@ const router = createRouter({
         component: () => import("@/views/BranchView.vue"),
       },
       {
+        path: '/joinFunctionDisplay',
+        name: 'joinFunctionDisplay',
+        component: () => import("@/views/JoinFuncDisplay.vue"),
+      },
+      {
         path: '/store/:storeID',
         name: 'ProductView',
         component: () => import("@/views/ProductView.vue"),

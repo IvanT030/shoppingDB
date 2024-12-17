@@ -29,7 +29,6 @@
       products = response.data.map(product => ({
         id: product.ProductID,
         name: product.ProductName,
-        image: "https://via.placeholder.com/150",
         category: product.Category,
         price: product.Price,
         stock: product.Stock,

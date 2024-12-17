@@ -3,11 +3,15 @@
         <form @submit.prevent="handleSubmit">
         <h2>{{ purchase?.PurchaseID ? '修改進貨記錄' : '新增進貨記錄' }}</h2>
         <label>
-            店家編號:
+            分店編號:
             <input v-model="form.StoreID" type="number" required />
         </label>
         <label>
-            商品編號:
+            分店名稱:
+            <input v-model="form.ProductID" type="number" required />
+        </label>
+        <label>
+            分店位置:
             <input v-model="form.ProductID" type="number" required />
         </label>
         <label>
@@ -22,8 +26,6 @@
             過期日期:
             <input v-model="form.ExpirationDate" type="date" required />
         </label>
-        <button type="submit" class="btn-edit-yap">保存</button>
-        <button type="button" @click="$emit('close')" class="btn-edit-nop">取消</button>
         </form>
     </div>
 </template>
@@ -37,8 +39,6 @@
       default: null,
     },
   });
-  
-  const emit = defineEmits(['close', 'save']);
   
   const form = ref({
     StoreID: '',
