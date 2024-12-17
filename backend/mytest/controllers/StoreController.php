@@ -2,9 +2,14 @@
 require_once __DIR__ . '/../models/StoreModel.php';
 
 function getStoresHandler($pdo) {
-    $stores = getAllStores($pdo);
     header('Content-Type: application/json');
-    echo json_encode($stores);
+    try {
+        $stores = getAllStores($pdo); // 調用模型中的函數
+        echo json_encode($stores);    // 返回 JSON 格式的分店數據
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
 }
 
 function getStoreDetailsHandler($pdo, $storeId) {

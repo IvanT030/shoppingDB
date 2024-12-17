@@ -4,6 +4,11 @@ function getAllProducts($pdo) {
     $stmt = $pdo->query($sql);
     return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return all products
 }
+function getAllStores($pdo) {
+    $sql = "SELECT * FROM stores"; // 假設資料表名稱是 'stores'
+    $stmt = $pdo->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 function getProductById($pdo, $productId) {
     $sql = "SELECT * FROM Products WHERE ProductID = ?";

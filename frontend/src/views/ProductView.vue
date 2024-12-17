@@ -1,7 +1,15 @@
 <template>
   <div>
+    <!-- 頁面標題 -->
     <DefaultPage :pageTitle="'商品管理'" />
-    <ProductList :products="products" @view-detail="viewDetail" />
+
+    <!-- 商品列表 -->
+    <ProductList 
+      :products="products" 
+      @view-detail="viewDetail" 
+    />
+
+    <!-- 商品詳細資訊 -->
     <ProductDetail
       v-if="selectedProduct"
       :product="selectedProduct"
@@ -66,18 +74,18 @@
   text-align: center;
 }
 
+/* 商品詳細資訊視窗樣式 */
 #detail {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* 平移至真正居中位置 */
-  width: 50%;    
-  max-width: 600px; 
-  padding: 20px; 
-  background-color: aliceblue; 
-  border-radius: 8px; 
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  transform: translate(-50%, -50%);
+  width: 50%;
+  max-width: 600px;
+  padding: 20px;
+  background-color: aliceblue;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
-
 </style>

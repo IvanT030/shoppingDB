@@ -1,80 +1,72 @@
 <template>
+  <!-- 頁面標題 -->
   <DefaultPage pageTitle="分店查詢" />
 
+  <!-- 分店列表 -->
   <div class="store-container" v-if="!intoDetail">
-    <h2>選擇分店：</h2>
     <div v-for="store in stores" :key="store.StoreID" class="store-item">
       <button class="store-button" @click="openDetail(store)">
         {{ store.StoreName }}
       </button>
     </div>
-    <router-link to="/joinFunctionDisplay">或是...直接看所有店的進貨清單?</router-link>
   </div>
 
-  <StoreDetail
+  <!-- 分店詳細資訊 -->
+  <StoreDetail 
     v-else 
     :display="intoDetail" 
-    :mostProduct="mostProduct"
     @closeDetail="closeDetail" 
-    @goProductView="navigateToProductView"
-    @goPurchaseView="navigateToPurchasetView">
-  </StoreDetail>
-
+  />
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
 import DefaultPage from '@/components/DefaultPage.vue';
 import StoreDetail from '@/components/StoreDetail.vue';
+import axios from 'axios';
 
-const intoDetail = ref(null);
-const mostProduct = ref(null);
-const router = useRouter();
+const intoDetail = ref(null); // 當前選中的分店詳細資訊
+const stores = ref([]);       // 分店列表數據
 
-/*這裡要從資料庫拿分店資料*/
-const stores = [
-  { StoreID: 1, StoreName: '中正路分店', StoreNumber: '0212344567', City: '台北' },
-  { StoreID: 2, StoreName: '民權路分店', StoreNumber: '0223456789', City: '新北' },
-  { StoreID: 3, StoreName: '文化路分店', StoreNumber: '0234567890', City: '桃園' },
-];
-
-/*這裡要用aggregate function找到再storeID下單個總和最多的商品*/
-const getMostProduct = (storeID) => {
-  /*axios查詢*/
-  //mostProduct.value = 查詢的商店物件;
-  mostProduct.value = {
-    name: '我媽',
-    Quantity: 50,
+// 從後端獲取分店列表數據
+const fetchStores = async () => {
+  try {
+    const response = await axios.get('http://localhost/mytest/stores'); // 請求後端 API
+    stores.value = response.data.map(store => ({
+      StoreID: store.StoreID,
+      StoreName: store.StoreName,
+      StoreNumber: store.StoreNumber,
+      City: store.City,
+    }));
+  } catch (error) {
+    console.error('獲取分店數據失敗：', error);
   }
-}
+};
 
+// 打開分店詳細頁面
 const openDetail = (store) => {
   intoDetail.value = store;
-  getMostProduct(store.StoreID);
 };
 
+// 關閉分店詳細頁面
 const closeDetail = () => {
   intoDetail.value = null;
-  router.push({ name: 'branch' });
 };
 
-const navigateToProductView = (id) => {
-  router.push({ name: 'ProductView', params: { storeID: id } });
-};
-
-const navigateToPurchasetView = (id) => {
-  router.push({ name: 'purchaseView', params: { storeID: id } });
-}
+// 組件掛載時自動調用 API
+onMounted(() => {
+  fetchStores();
+});
 </script>
 
 <style scoped>
-  .store-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-  }
+.store-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh; /* 讓容器填滿整個視窗高度 */
+  padding-top: 140px; /* 避免與頁面標題重疊 */
+}
 
   .store-container h2 {
     font-size: 32px;
