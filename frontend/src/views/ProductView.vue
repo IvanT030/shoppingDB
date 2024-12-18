@@ -2,7 +2,9 @@
   <div>
     <!-- 頁面標題 -->
     <DefaultPage :pageTitle="'商品管理'" />
-    <button class="bak" @click="back">回主頁</button>
+
+    <button class="btn" @click="back">回主頁</button> <br><br>
+    <button class="btn" @click="insert"> 新增商品 </button>
 
     <!-- 商品列表 -->
     <ProductList 
@@ -17,6 +19,13 @@
       @close="closeDetail"
       @saveData="saveProduct"
     />
+
+    <ProductCreateForm
+      v-if="showCreateForm"
+      @close="closeCreateForm"
+      @save="addProduct"
+    />
+
   </div>
 </template>
 
@@ -27,10 +36,12 @@
   import DefaultPage from '@/components/DefaultPage.vue';
   import ProductList from '@/components/ProductList.vue';
   import ProductDetail from '@/components/ProductDetail.vue';
+  import ProductCreateForm from '@/components/ProductCreateForm.vue';
 
   const products = ref([]);
   const selectedProduct = ref(null);
   const router = useRouter()
+  const showCreateForm = ref(false);
 
   const fetchProducts = async () => {
     try {
@@ -54,6 +65,36 @@
   const back = () =>{
     router.push({name: 'branch'})
   }
+
+  const insert = () => {
+    showCreateForm.value = true;
+  };
+
+  const closeCreateForm = () => {
+    showCreateForm.value = false;
+  };
+
+  const addProduct = async (newProduct) => {
+    /*
+    newProduct = {
+      name: 'asd', 
+      category: 'asd', 
+      price: 456, 
+      stock: 456, 
+      salesVolume: 456}
+    }
+    */
+    try {
+      //這樣直接POST下去 後端查看直接是NULL值 因為這個修改的是VSCODE的
+      await axios.post("http://localhost/mytest/products", newProduct);
+      products.value.push(newProduct); // 新增到本地數據
+      alert("商品新增成功！");
+    } catch (error) {
+      alert("商品新增失敗！");
+    } finally {
+      closeCreateForm();
+    }
+  };
 
   const viewDetail = (product) => {
     selectedProduct.value = product;
@@ -96,7 +137,7 @@
   z-index: 1000;
 }
 
-.bak {
+.btn {
   background-color: #2ecc71;
   color: b6b6b6;
   border: none;
@@ -106,7 +147,7 @@
   transition: background-color 0.3s ease;
 }
 
-.bak:hover {
+.btn:hover {
   background-color: #27ae60;
 }
 </style>

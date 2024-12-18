@@ -25,7 +25,7 @@
     </form>
     <div class="edit-buttons">
       <button type="button" class="btn-edit-nop" v-on:click="$emit('close')">取消</button>
-      <button type="button" class="btn-edit-yap" v-on:click="$emit('saveData', form.value)">確認</button>
+      <button type="button" class="btn-edit-yap" v-on:click="$emit('save', form);">確認</button>
     </div>
   </div>
 </template>

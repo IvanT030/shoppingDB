@@ -51,19 +51,18 @@
   const showForm = ref(false);
   const currentPurchase = ref(null);
   //因為我表單用同一個格式 但是要去區分更新跟新增
-  const createForm = false;
+  const createForm = ref(null);
 
   /*資料庫拿數據*/
   const fetchPurchases = async () => {
   try {
     const response = await axios.get("http://localhost/mytest/purchases");
-    console.log(response)
     const sampleData = response.data.map(product => ({
-      StoreID: product.ProductID,
-      ProductID: product.ProductName,
-      Quantity: product.Price,
-      PurchaseDate: product.Stock,
-      ExpirationDate: product.SaleVolume
+      StoreID: product.StoreID,
+      ProductID: product.ProductID,
+      Quantity: product.Quantity,
+      PurchaseDate: product.PurchaseDate,
+      ExpirationDate: product.ExpirationDate
     }));
     purchaseList.value = sampleData.filter((purchase) => purchase.StoreID == storeID);
   } catch (error) {
@@ -73,24 +72,25 @@
 
   const openCreateForm = () => {
     currentPurchase.value = null;
-    createForm = true;
+    createForm.value = true;
     showForm.value = true;
   };
   
   const openEditForm = (purchase) => {
     currentPurchase.value = { ...purchase };
-    createForm = false;
+    createForm.value = false;
     showForm.value = true;
   };
 
   const closeForm = () => {
+    createForm.value = null;
     showForm.value = false;
   };
   
   //新增跟修改訂單-----------------------------------
   /*保存修改完訂單 輸入是object*/
   const savePurchase = async (purchase) => {
-    /*要確認是否為有效新增 是否為NULL
+    /*要確認是否為有效新增 是否為NULL purchase是一個物件
     if(purchase)
     然後purchase = {
       StoreID: '',
@@ -100,10 +100,10 @@
       ExpirationDate: '',
     }
     */
-    if(createForm){
-      //這裡做新增的
+    if(createForm.value){
+      //這裡做新增的進貨
     }else{
-      //這裡做修改的
+      //這裡做修改的進貨
     }
     closeForm();
   };
