@@ -50,68 +50,61 @@
   const purchaseList = ref([]);
   const showForm = ref(false);
   const currentPurchase = ref(null);
+  //因為我表單用同一個格式 但是要去區分更新跟新增
+  const createForm = false;
 
   /*資料庫拿數據*/
   const fetchPurchases = async () => {
   try {
-      const sampleData = [
-      {
-          PurchaseID: 1,
-          StoreID: 1,
-          ProductID: 201,
-          Quantity: 50,
-          PurchaseDate: "2024-12-01",
-          ExpirationDate: "2025-01-01",
-      },
-      {
-          PurchaseID: 2,
-          StoreID: 1,
-          ProductID: 202,
-          Quantity: 30,
-          PurchaseDate: "2024-12-05",
-          ExpirationDate: "2025-01-10",
-      },
-      {
-          PurchaseID: 3,
-          StoreID: 1,
-          ProductID: 203,
-          Quantity: 20,
-          PurchaseDate: "2024-12-10",
-          ExpirationDate: "2025-02-01",
-      },
-      {
-          PurchaseID: 3,
-          StoreID: 1,
-          ProductID: 203,
-          Quantity: 20,
-          PurchaseDate: "2024-12-10",
-          ExpirationDate: "2025-02-01",
-      },
-      ];
-
-      purchaseList.value = sampleData.filter((purchase) => purchase.StoreID == storeID);
-
+    const response = await axios.get("http://localhost/mytest/purchases");
+    console.log(response)
+    const sampleData = response.data.map(product => ({
+      StoreID: product.ProductID,
+      ProductID: product.ProductName,
+      Quantity: product.Price,
+      PurchaseDate: product.Stock,
+      ExpirationDate: product.SaleVolume
+    }));
+    purchaseList.value = sampleData.filter((purchase) => purchase.StoreID == storeID);
   } catch (error) {
-      console.error(error);
+    alert('資料讀取錯誤')
   }
   };
 
   const openCreateForm = () => {
     currentPurchase.value = null;
+    createForm = true;
     showForm.value = true;
   };
   
   const openEditForm = (purchase) => {
     currentPurchase.value = { ...purchase };
+    createForm = false;
     showForm.value = true;
   };
-  
+
   const closeForm = () => {
     showForm.value = false;
   };
   
+  //新增跟修改訂單-----------------------------------
   /*保存修改完訂單 輸入是object*/
   const savePurchase = async (purchase) => {
+    /*要確認是否為有效新增 是否為NULL
+    if(purchase)
+    然後purchase = {
+      StoreID: '',
+      ProductID: '',
+      Quantity: '',
+      PurchaseDate: '',
+      ExpirationDate: '',
+    }
+    */
+    if(createForm){
+      //這裡做新增的
+    }else{
+      //這裡做修改的
+    }
     closeForm();
   };
   
@@ -119,7 +112,7 @@
   const deletePurchase = async (purchaseID) => {
     closeForm();
   };
-  
+  //------------------------------------
   const navToBranch = () => {
     router.push({ name: 'branch' });
   }

@@ -1,9 +1,7 @@
 <template>
   <div class="store-detail">
     <!-- 返回按鈕 -->
-    <button class="back-button" @click="emit('closeDetail')">
-      回分店頁面
-    </button>
+    <button class="back-button" @click="$emit('closeDetail')"> 回分店頁面 </button>
 
     <!-- 分店詳細資訊 -->
     <div class="store-card">
@@ -14,41 +12,51 @@
 
     <!-- 操作按鈕組 -->
     <div class="button-group">
-      <button class="action-button" @click="viewRestockList">
+      <button class="action-button" @click="$emit('goPurchaseView',display.StoreID)">
         查看進貨清單
       </button>
-      <button class="action-button" @click="editProducts">
+      <button class="action-button" @click="$emit('goProductView',display.StoreID)">
         修改商品資訊
       </button>
     </div>
+
+    <!--進貨最多的商品-->
+    <br>
+    <h1>本店進貨最多商品</h1>
+    <p>{{mostProduct.name}}: {{mostProduct.Quantity}}件</p>
+
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+  import { defineProps, defineEmits } from 'vue';
+  // 定義 emit 事件，通知父組件關閉分店詳細視圖 去到其他連結
+  const emit = defineEmits(['closeDetail', 'goProductView', 'goPurchaseView']);
+  // 定義從父組件接收的 `display` 資料（分店詳細資訊）
+  const props = defineProps({
+    display: {
+      type: Object,
+      default: false,
+    },
+    mostProduct: {
+      type: Object,
+      default: false,
+    },
+  });
 
-// 定義從父組件接收的 `display` 資料（分店詳細資訊）
-const props = defineProps({
-  display: {
-    type: Object,
-    required: true, // 必須傳入分店資訊
-  },
-});
+  /* 這個在你的那個branch被改搬到父組件去了 實作方面到BranchView.vue
+  // 查看進貨清單（可擴展功能）
+  const viewRestockList = () => {
+    console.log(storeID); // 這裡可以連接進貨清單 API
+    alert('進貨清單功能尚未實現');
+  };
 
-// 定義 emit 事件，通知父組件關閉分店詳細視圖
-const emit = defineEmits(['closeDetail']);
-
-// 查看進貨清單（可擴展功能）
-const viewRestockList = () => {
-  console.log('進貨清單功能尚未實現'); // 這裡可以連接進貨清單 API
-  alert('進貨清單功能尚未實現');
-};
-
-// 修改商品資訊（可擴展功能）
-const editProducts = () => {
-  console.log('修改商品功能尚未實現'); // 這裡可以導航到商品編輯頁面
-  alert('修改商品功能尚未實現');
-};
+  // 修改商品資訊（可擴展功能）
+  const editProducts = () => {
+    console.log('修改商品功能尚未實現'); // 這裡可以導航到商品編輯頁面
+    alert('修改商品功能尚未實現');
+  };
+  */
 </script>
 
 <style scoped>
@@ -59,7 +67,7 @@ const editProducts = () => {
   align-items: center;
   justify-content: center;
   background-color: #f9f9f9;
-  height: 100vh; /* 滿屏高度 */
+  height: 60vh; /* 滿屏高度 */
   padding: 20px;
 }
 

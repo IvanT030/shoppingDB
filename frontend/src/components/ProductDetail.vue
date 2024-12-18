@@ -1,192 +1,193 @@
 <template>
-  <div class="product-detail">
-    <button type="button" class="btn-close" v-on:click="closeDetail()"> X </button>
-    
-    <div v-if="!editing">
-      <h2>{{ product.name }}</h2>
-      <img :src="product.image" alt="商品圖片" />
-      <p>分類：{{ product.category }}</p>
-      <p>價格：{{ product.price }} 元</p>
-      <p>庫存：{{ product.stock }}</p>
-      <p>銷售量：{{ product.salesVolume }}</p>
-      <button type="button" class="btn-edit" v-on:click="edit()"> 修改 </button>
-    </div>
+  <div class="modal-container">
+    <div class="product-detail">
+      <button type="button" class="btn-close" v-on:click="closeDetail()"> X </button>
+      
+      <div v-if="!editing">
+        <h2>{{ product.name }}</h2>
+        <img :src="product.image" alt="商品圖片" />
+        <p>分類：{{ product.category }}</p>
+        <p>價格：{{ product.price }} 元</p>
+        <p>庫存：{{ product.stock }}</p>
+        <p>銷售量：{{ product.salesVolume }}</p>
+        <button type="button" class="btn-edit" v-on:click="edit()"> 修改 </button>
+      </div>
 
-    <div v-else class="edit-container">
-      <div class="edit-field">
-        <label>商品名稱：</label>
-        <input type="text" v-model="newProduct.name" />
-      </div>
-      <div class="edit-field">
-        <img :src="newProduct.image" alt="商品圖片" />
-      </div>
-      <div class="edit-field">
-        <label>分類：</label>
-        <input type="text" v-model="newProduct.category" />
-      </div>
-      <div class="edit-field">
-        <label>價格：</label>
-        <input type="number" v-model="newProduct.price" /> 元
-      </div>
-      <div class="edit-field">
-        <label>庫存：</label>
-        <input type="number" v-model="newProduct.stock" />
-      </div>
-      <div class="edit-field">
-        <label>銷售量：</label>
-        <input type="number" v-model="newProduct.salesVolume" />
-      </div>
-      <div class="edit-buttons">
-        <button type="button" class="btn-edit-nop" v-on:click="cancelEdit()">取消</button>
-        <button type="button" class="btn-edit-yap" v-on:click="save(newProduct)">確認</button>
+      <div v-else class="edit-container">
+        <div class="edit-field">
+          <label>商品名稱：</label>
+          <input type="text" v-model="newProduct.name" />
+        </div>
+
+        <div class="edit-field">
+          <img :src="newProduct.image" alt="商品圖片" />
+        </div>
+
+        <div class="edit-field">
+          <label>分類：</label>
+          <input type="text" v-model="newProduct.category" />
+        </div>
+
+        <div class="edit-field">
+          <label>價格：</label>
+          <input type="number" v-model="newProduct.price" /> 元
+        </div>
+
+        <div class="edit-field">
+          <label>庫存：</label>
+          <input type="number" v-model="newProduct.stock" />
+        </div>
+
+        <div class="edit-field">
+          <label>銷售量：</label>
+          <input type="number" v-model="newProduct.salesVolume" />
+        </div>
+
+        <div class="edit-buttons">
+          <button type="button" class="btn-edit-nop" v-on:click="cancelEdit()">取消</button>
+          <button type="button" class="btn-edit-yap" v-on:click="save(newProduct)">確認</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
-  
-  <script>
-  export default {
-    props: {
-      product: {
-        type: Object,
-        required: true,
-      },
+
+<script>
+export default {
+  props: {
+    product: {
+      type: Object,
+      required: true,
     },
-    data(){
-      return{
-        editing: false,
-        newProduct: null,
-      }
+  },
+  data() {
+    return {
+      editing: false,
+      newProduct: null,
+    };
+  },
+  methods: {
+    closeDetail() {
+      this.editing = false;
+      this.$emit("close"); // 通知父组件关闭模态框
     },
-    methods: {
-      closeDetail() {
-        this.editing = false;
-        this.$emit('close'); //通知父組件關閉詳細視窗
-      },
-      edit(){
-        this.editing = true;
-        /*deep copy*/
-        this.newProduct = JSON.parse(JSON.stringify(this.product));
-      },
-      cancelEdit(){
-        console.log(this.product);
-        this.editing = false;
-        this.newProduct = null;
-      },
-      save(data){
-        this.$emit('saveData', data);
-        this.editing = false;
-        this.newProduct = null;
-      },
-    }
-  };
-  </script>
-  
-  <style>
-  .product-detail {
-    font-size: 20px;
-    padding: 13px;
-    margin-top: 6px;
-    background-color: rgb(88, 84, 84, 0.35);
-  }
+    edit() {
+      this.editing = true;
+      this.newProduct = JSON.parse(JSON.stringify(this.product)); // 深拷贝
+    },
+    cancelEdit() {
+      this.editing = false;
+      this.newProduct = null;
+    },
+    save(data) {
+      this.$emit('saveData', data); // 通知父組件更新數據
+      this.product = { ...data }; // 更新內部的 product
+      this.editing = false;
+      this.newProduct = null;
+    },
+  },
+};
+</script>
 
-  .edit-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    max-width: 100%;
-    margin: 20px auto;
-  }
-  
-  .edit-field {
-    width: 40%;
-    margin-bottom: 16px;
-  }
+<style scoped>
+/* 模态框外层容器 */
+.modal-container {
+  position: fixed; /* 固定定位，确保模态框不随页面滚动 */
+  top: 0;
+  left: 0;
+  width: 100vw; /* 占满整个视窗宽度 */
+  height: 100vh; /* 占满整个视窗高度 */
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+  display: flex; /* 使用 flexbox 实现居中对齐 */
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  z-index: 1000; /* 确保在最上层显示 */
+}
 
-  .edit-field label {
-    font-size: 18px;
-  }
+/* 商品详情卡片 */
+.product-detail {
+  width: 400px; /* 固定宽度 */
+  padding: 20px; /* 内边距 */
+  border-radius: 8px; /* 圆角边框 */
+  background-color: #ffffff; /* 白色背景 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 投影效果 */
+  text-align: center; /* 居中对齐文本 */
+  position: relative; /* 方便定位关闭按钮 */
+}
 
-  .edit-field input {
-    width: 100%;
-    font-size: 16px;
-    border-radius: 4px;
-  }
+/* 关闭按钮 */
+.btn-close {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
 
-  .btn-close{
-    position: absolute;
-    right: 8%;
-    appearance: none;
-    background-color: transparent;
-    border: 2px solid #1A1A1A;
-    border-radius: 15px;
-    box-sizing: border-box;
-    color: #3B3B3B;
-    cursor: pointer;
-    display: inline-block;
-    font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-    font-size: 14px;
-    font-weight: 600;
-    line-height: normal;
-    outline: none;
-    padding: 14px;
-    text-align: center;
-    text-decoration: none;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    will-change: transform;
-  }
+.btn-close:hover {
+  background-color: #d43f3f;
+}
 
-  .btn-close:disabled {
-    pointer-events: none;
-  }
+/* 编辑模式容器 */
+.edit-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: rgb(88, 84, 84, 0.1);
+}
 
-  .btn-close:hover {
-    color: #fff;
-    background-color: #444343;
-    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
-    transform: translateY(-2px);
-  }
+/* 输入框样式 */
+.edit-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
 
-  .btn-close:active {
-    box-shadow: none;
-    transform: translateY(0);
-  }
+.edit-field label {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
 
-  .btn-edit {
-    transition-duration: 0.4s;
-    padding: 5px 15px;
-  }
+.edit-field input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
-  .btn-edit:hover {
-    background-color: #1A1A1A;
-    color: white;
-  }
+/* 按钮组样式 */
+.edit-buttons {
+  display: flex;
+  justify-content: space-between; /* 按钮两端对齐 */
+  width: 100%;
+}
 
-  .btn-edit-nop {
-    position: relative;
-    transition-duration: 0.4s;
-    padding: 5px 15px;
-    right: 10%;
-  }
+.btn-edit-nop,
+.btn-edit-yap {
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+}
 
-  .btn-edit-nop:hover {
-    background-color: #b6b6b6;
-  }
+.btn-edit-nop {
+  background-color: #ff4d4d;
+  color: white;
+}
 
-  .btn-edit-yap {
-    position: relative;
-    transition-duration: 0.4s;
-    padding: 5px 15px;
-    left: 10%;
-  }
-
-  .btn-edit-yap:hover {
-    background-color: #b50000;
-    color: white;
-  }
-  
-  </style>
+.btn-edit-yap {
+  background-color: #4caf50;
+  color: white;
+}
+</style>

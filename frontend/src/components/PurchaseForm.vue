@@ -1,33 +1,33 @@
 <template>
-    <div class="form-container">
-        <form @submit.prevent="handleSubmit">
-        <h2>{{ purchase?.PurchaseID ? '修改進貨記錄' : '新增進貨記錄' }}</h2>
-        <label>
-            分店編號:
-            <input v-model="form.StoreID" type="number" required />
-        </label>
-        <label>
-            分店名稱:
-            <input v-model="form.ProductID" type="number" required />
-        </label>
-        <label>
-            分店位置:
-            <input v-model="form.ProductID" type="number" required />
-        </label>
-        <label>
-            進貨數量:
-            <input v-model="form.Quantity" type="number" required />
-        </label>
-        <label>
-            進貨日期:
-            <input v-model="form.PurchaseDate" type="date" required />
-        </label>
-        <label>
-            過期日期:
-            <input v-model="form.ExpirationDate" type="date" required />
-        </label>
-        </form>
+  <div class="form-container">
+    <form @submit.prevent="handleSubmit">
+    <h2>{{ purchase?.PurchaseID ? '修改進貨記錄' : '新增進貨記錄' }}</h2>
+    <label>
+        分店編號:
+        <input v-model="form.StoreID" type="number" required />
+    </label>
+    <label>
+        商品編號:
+        <input v-model="form.ProductID" type="number" required />
+    </label>
+    <label>
+        進貨數量:
+        <input v-model="form.Quantity" type="number" required />
+    </label>
+    <label>
+        進貨日期:
+        <input v-model="form.PurchaseDate" type="date" required />
+    </label>
+    <label>
+        過期日期:
+        <input v-model="form.ExpirationDate" type="date" required />
+    </label>
+    </form>
+    <div class="edit-buttons">
+      <button type="button" class="btn-edit-nop" v-on:click="$emit('close')">取消</button>
+      <button type="button" class="btn-edit-yap" v-on:click="$emit('saveData', form.value)">確認</button>
     </div>
+  </div>
 </template>
   
 <script setup>
@@ -65,6 +65,7 @@
     { immediate: true }
   );
   
+  //傳遞資料給父組件
   const handleSubmit = () => {
     emit('save', form.value);
   };
@@ -84,8 +85,8 @@
     z-index: 1000;
     width: 400px;
   }
-  form {
 
+  form {
     width: 100%;
     max-width: 400px;
     background: white;

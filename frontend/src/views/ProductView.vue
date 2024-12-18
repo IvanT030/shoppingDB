@@ -2,6 +2,7 @@
   <div>
     <!-- 頁面標題 -->
     <DefaultPage :pageTitle="'商品管理'" />
+    <button class="bak" @click="back">回主頁</button>
 
     <!-- 商品列表 -->
     <ProductList 
@@ -21,6 +22,7 @@
 
 <script setup>
   import { ref, onMounted } from 'vue';
+  import { useRouter } from 'vue-router';
   import axios from 'axios';
   import DefaultPage from '@/components/DefaultPage.vue';
   import ProductList from '@/components/ProductList.vue';
@@ -28,13 +30,13 @@
 
   const products = ref([]);
   const selectedProduct = ref(null);
+  const router = useRouter()
 
-  /*出問題了 沒辦法拿資料*/
   const fetchProducts = async () => {
     try {
       const response = await axios.get("http://localhost/mytest/products");
       console.log(response)
-      products = response.data.map(product => ({
+      products.value = response.data.map(product => ({
         id: product.ProductID,
         name: product.ProductName,
         category: product.Category,
@@ -43,11 +45,15 @@
         salesVolume: product.SaleVolume
       }));
     } catch (error) {
-      console.error('获取商品失败:', error);
+      alert('获取商品失败')
     }
   }
 
   onMounted(fetchProducts);
+
+  const back = () =>{
+    router.push({name: 'branch'})
+  }
 
   const viewDetail = (product) => {
     selectedProduct.value = product;
@@ -58,12 +64,13 @@
   };
 
   const saveProduct = async (updatedProduct) => {
+    console.log('from here', updatedProduct);
     try {
       await axios.put(`http://localhost/mytest/products/${updatedProduct.id}`, updatedProduct);
       const index = products.value.findIndex((p) => p.id === updatedProduct.id);
       if (index !== -1) products.value.splice(index, 1, updatedProduct);
     } catch (error) {
-      console.error('保存商品失败:', error);
+      alert('保存商品失败');
     }
   };
 </script>
@@ -87,5 +94,19 @@
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+}
+
+.bak {
+  background-color: #2ecc71;
+  color: b6b6b6;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bak:hover {
+  background-color: #27ae60;
 }
 </style>
