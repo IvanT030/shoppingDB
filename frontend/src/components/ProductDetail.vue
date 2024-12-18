@@ -80,11 +80,12 @@ export default {
       this.newProduct = null;
     },
     save(data) {
-      this.$emit('saveData', data); // 通知父組件更新數據
-      this.product = { ...data }; // 更新內部的 product
-      this.editing = false;
-      this.newProduct = null;
-    },
+  const cleanData = JSON.parse(JSON.stringify(data)); // 深拷貝，避免代理問題
+  this.$emit('saveData', cleanData); // 發送事件通知父組件更新數據
+  this.editing = false; // 結束編輯模式
+  this.newProduct = null;
+}
+
   },
 };
 </script>

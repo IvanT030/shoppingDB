@@ -44,9 +44,10 @@
   const showCreateForm = ref(false);
 
   const fetchProducts = async () => {
-    try {
-      const response = await axios.get("http://localhost/mytest/products");
-      console.log(response)
+  try {
+    const response = await axios.get("http://localhost/mytest/products");
+    console.log("Response Data:", response.data);  // Log the entire response data
+    if (Array.isArray(response.data)) {
       products.value = response.data.map(product => ({
         id: product.ProductID,
         name: product.ProductName,
@@ -55,10 +56,16 @@
         stock: product.Stock,
         salesVolume: product.SaleVolume
       }));
-    } catch (error) {
-      alert('获取商品失败')
+    } else {
+      console.error('Expected an array but received:', response.data);
     }
+  } catch (error) {
+    alert('获取商品失败');
+    console.error("Fetch Products Error:", error.response || error.message);
   }
+};
+
+
 
   onMounted(fetchProducts);
 
@@ -75,26 +82,34 @@
   };
 
   const addProduct = async (newProduct) => {
-    /*
-    newProduct = {
-      name: 'asd', 
-      category: 'asd', 
-      price: 456, 
-      stock: 456, 
-      salesVolume: 456}
-    }
-    */
-    try {
-      //這樣直接POST下去 後端查看直接是NULL值 因為這個修改的是VSCODE的
-      await axios.post("http://localhost/mytest/products", newProduct);
-      products.value.push(newProduct); // 新增到本地數據
-      alert("商品新增成功！");
-    } catch (error) {
-      alert("商品新增失敗！");
-    } finally {
-      closeCreateForm();
-    }
+  const formattedProduct = {
+    ProductName: newProduct.name,
+    Category: newProduct.category,
+    Price: newProduct.price,
+    Stock: newProduct.stock,
+    SaleVolume: newProduct.salesVolume,
   };
+
+  try {
+    const response = await axios.post("http://localhost/mytest/products", formattedProduct);
+    const createdProduct = response.data; // 從後端獲取返回的產品數據
+    products.value.push({
+      id: createdProduct.ProductID,
+      name: createdProduct.ProductName,
+      category: createdProduct.Category,
+      price: createdProduct.Price,
+      stock: createdProduct.Stock,
+      salesVolume: createdProduct.SalesVolume,
+    });
+    alert("商品新增成功！");
+  } catch (error) {
+    alert("商品新增失敗！");
+    console.error("Add Product Error:", error.response || error.message);
+  } finally {
+    closeCreateForm();
+  }
+};
+
 
   const viewDetail = (product) => {
     selectedProduct.value = product;
@@ -105,15 +120,36 @@
   };
 
   const saveProduct = async (updatedProduct) => {
-    console.log('from here', updatedProduct);
-    try {
-      await axios.put(`http://localhost/mytest/products/${updatedProduct.id}`, updatedProduct);
-      const index = products.value.findIndex((p) => p.id === updatedProduct.id);
-      if (index !== -1) products.value.splice(index, 1, updatedProduct);
-    } catch (error) {
-      alert('保存商品失败');
-    }
+  const formattedProduct = {
+    ProductID: updatedProduct.id,
+    ProductName: updatedProduct.name,
+    Category: updatedProduct.category,
+    Price: updatedProduct.price,
+    Stock: updatedProduct.stock,
+    SaleVolume: updatedProduct.salesVolume,
   };
+
+  try {
+    await axios.put(`http://localhost/mytest/products/${formattedProduct.ProductID}`, formattedProduct);
+    const index = products.value.findIndex((p) => p.id === updatedProduct.id);
+    if (index !== -1) {
+      products.value.splice(index, 1, {
+        id: formattedProduct.ProductID,
+        name: formattedProduct.ProductName,
+        category: formattedProduct.Category,
+        price: formattedProduct.Price,
+        stock: formattedProduct.Stock,
+        salesVolume: formattedProduct.SaleVolume,
+      });
+    }
+    alert("商品更新成功！");
+  } catch (error) {
+    console.error("Save Product Error:", error.response || error.message);
+    alert("商品更新失敗！");
+  }
+};
+
+
 </script>
 
 <style>

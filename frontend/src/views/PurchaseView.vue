@@ -56,19 +56,22 @@
   /*資料庫拿數據*/
   const fetchPurchases = async () => {
   try {
-    const response = await axios.get("http://localhost/mytest/purchases");
-    const sampleData = response.data.map(product => ({
-      StoreID: product.StoreID,
-      ProductID: product.ProductID,
-      Quantity: product.Quantity,
-      PurchaseDate: product.PurchaseDate,
-      ExpirationDate: product.ExpirationDate
+    const response = await axios.get(`http://localhost/mytest/purchases?storeID=${storeID}`);
+    console.log('Response Data:', response.data); // 確認返回的數據
+
+    purchaseList.value = response.data.map(purchase => ({
+      StoreID: purchase.StoreID,
+      ProductID: purchase.ProductID,
+      Quantity: purchase.Quantity,
+      PurchaseDate: new Date(purchase.PurchaseDate).toLocaleDateString(),
+      ExpirationDate: new Date(purchase.ExpirationDate).toLocaleDateString(),
     }));
-    purchaseList.value = sampleData.filter((purchase) => purchase.StoreID == storeID);
   } catch (error) {
-    alert('資料讀取錯誤')
+    console.error('Error fetching purchases:', error.response || error.message);
+    alert('資料讀取錯誤：請檢查後端或網絡連接');
   }
-  };
+};
+
 
   const openCreateForm = () => {
     currentPurchase.value = null;
