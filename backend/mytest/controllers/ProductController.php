@@ -44,6 +44,7 @@ function addProductHandler($pdo) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
+
 function getProductByIdHandler($pdo, $productId) {
     try {
         // Prepare the SQL query to get the product by ID
@@ -63,7 +64,6 @@ function getProductByIdHandler($pdo, $productId) {
         echo json_encode(['status' => 'error', 'message' => 'Error fetching product']);
     }
 }
-
 
 function updateProductHandler($pdo, $productID) {
     // 解析前端發送的 JSON 請求
@@ -96,17 +96,34 @@ function updateProductHandler($pdo, $productID) {
             ':ProductID' => $productID
         ]);
 
-        echo json_encode(['status' => 'success', 'message' => '商品更新成功']);
+        // 確認是否有更新行數，避免錯誤的 ID
+        if ($stmt->rowCount() > 0) {
+            echo json_encode(['status' => 'success', 'message' => '商品更新成功']);
+        } else {
+            // 若沒有任何行數受影響，表示沒有找到該商品
+            http_response_code(404);
+            echo json_encode(['status' => 'error', 'message' => 'Product not found']);
+        }
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
 
-
 function deleteProductHandler($pdo, $productId) {
-    $success = deleteProduct($pdo, $productId); // Pass $pdo
-    header('Content-Type: application/json');
-    echo json_encode(['status' => $success ? 'success' : 'error']);
+    try {
+        $stmt = $pdo->prepare("DELETE FROM product WHERE ProductID = ?");
+        $stmt->execute([$productId]);
+
+        if ($stmt->rowCount() > 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Product deleted']);
+        } else {
+            http_response_code(404);
+            echo json_encode(['status' => 'error', 'message' => 'Product not found']);
+        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
 }
 ?>

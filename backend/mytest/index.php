@@ -28,6 +28,8 @@ if (preg_match('/^\/products\/(\d+)$/', $path, $matches)) {
     } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         // Handle PUT request for updating the product
         parse_str(file_get_contents("php://input"), $_PUT);
+        require_once __DIR__ . '/controllers/ProductController.php';
+
         updateProductHandler($pdo, $productId, $_PUT); // Call the update function
     } else {
         http_response_code(405); // Method Not Allowed
