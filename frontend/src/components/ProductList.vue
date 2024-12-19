@@ -10,6 +10,7 @@
         <img :src="product.image" alt="商品圖片" />
         <h2>{{ product.name }}</h2>
         <p>價格：{{ product.price }}</p>
+        <p>總銷售量：{{ product.sales }}</p>
       </div>
     </div>
   </template>

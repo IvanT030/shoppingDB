@@ -1,26 +1,64 @@
 <?php
+// 獲取所有商品
 function getAllProducts($pdo) {
-    $sql = "SELECT * FROM product"; // Use the correct table name
-    $stmt = $pdo->query($sql);
+    $stmt = $pdo->query("SELECT * FROM product");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function addProduct($pdo, $name, $category, $price, $stock) {
-    $sql = "INSERT INTO product (ProductName, Category, Price, Stock) VALUES (?, ?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$name, $category, $price, $stock]);
-    return $pdo->lastInsertId();
+// 獲取單個商品
+function getProductById($pdo, $productId) {
+    $stmt = $pdo->prepare("SELECT * FROM product WHERE ProductID = ?");
+    $stmt->execute([$productId]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-function updateProduct($pdo, $productId, $price, $stock) {
-    $sql = "UPDATE product SET Price = ?, Stock = ? WHERE ProductID = ?";
-    $stmt = $pdo->prepare($sql);
-    return $stmt->execute([$price, $stock, $productId]);
+// 添加新商品
+function addProduct($pdo, $input) {
+    $stmt = $pdo->prepare("
+        INSERT INTO product (ProductName, Category, Price, SalesVolume)
+        VALUES (:ProductName, :Category, :Price, :SalesVolume)
+    ");
+    $stmt->execute([
+        ':ProductName' => $input['ProductName'],
+        ':Category' => $input['Category'],
+        ':Price' => $input['Price'],
+        ':SalesVolume' => $input['SalesVolume'],
+    ]);
+
+    return [
+        'ProductID' => $pdo->lastInsertId(),
+        'ProductName' => $input['ProductName'],
+        'Category' => $input['Category'],
+        'Price' => $input['Price'],
+        ':SalesVolume' => $input['SalesVolume'],
+    ];
 }
 
+// 更新商品
+function updateProduct($pdo, $productId, $input) {
+    $stmt = $pdo->prepare("
+        UPDATE product
+        SET ProductName = :ProductName,
+            Category = :Category,
+            Price = :Price,
+            SalesVolume = :SalesVolume
+        WHERE ProductID = :ProductID
+    ");
+    $stmt->execute([
+        ':ProductName' => $input['ProductName'],
+        ':Category' => $input['Category'],
+        ':Price' => $input['Price'],
+        ':ProductID' => $productId,
+        ':SalesVolume' => $input['SalesVolume'],
+    ]);
+
+    return $stmt->rowCount() > 0; // 返回是否有影響的行數
+}
+
+// 刪除商品
 function deleteProduct($pdo, $productId) {
-    $sql = "DELETE FROM product WHERE ProductID = ?";
-    $stmt = $pdo->prepare($sql);
-    return $stmt->execute([$productId]);
+    $stmt = $pdo->prepare("DELETE FROM product WHERE ProductID = ?");
+    $stmt->execute([$productId]);
+    return $stmt->rowCount() > 0; // 返回是否刪除成功
 }
 ?>

@@ -13,30 +13,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// 根據請求方法分發到相應的處理器
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    header('Content-Type: application/json');
-    echo json_encode(getAllProducts($pdo));
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    addProductHandler($pdo); // 新增商品
-} elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-    // 獲取 URL 路徑中的 ProductID
-    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    $uriParts = explode('/', $uri);
-    $productId = end($uriParts);  // 获取 URL 中的最后部分（ProductID）
-
-    if ($productId) {
-        parse_str(file_get_contents("php://input"), $_PUT);  // 获取 PUT 请求中的数据
-        updateProductHandler($pdo, $productId, $_PUT);  // 调用更新商品的处理函数
+if (preg_match('/^\/products\/(\d+)$/', $path, $matches)) {
+    $productId = $matches[1];
+    if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+        // Handle PUT request for updating the product
+        parse_str(file_get_contents("php://input"), $_PUT);
+        updateProductHandler($pdo, $productId, $_PUT); // Call the update function
     } else {
-        http_response_code(400);
-        echo json_encode(['status' => 'error', 'message' => 'Product ID is required.']);
+        http_response_code(405); // Method Not Allowed
+        echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
     }
-} elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-    parse_str(file_get_contents("php://input"), $_DELETE);
-    deleteProductHandler($pdo, $_DELETE['id']);
-} else {
-    http_response_code(405);
-    echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
+} elseif ($path === '/products') {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        getProductsHandler($pdo); // Directly call the controller function to get all products
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        addProductHandler($pdo); // Add a new product
+    } else {
+        http_response_code(405); // Method Not Allowed
+        echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
+    }
 }
 ?>

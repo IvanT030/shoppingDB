@@ -39,8 +39,19 @@
       default: null,
     },
   });
-  
+
+  // 日期格式化函数：将 Date 对象转为 YYYY-MM-DD 格式
+  const formatDate = (date) => {
+    if (!date) return ''; // 如果日期为空，返回空字符串
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const form = ref({
+    PurchaseID: '',
     StoreID: '',
     ProductID: '',
     Quantity: '',
@@ -51,8 +62,11 @@
   watch(() => props.purchase,
     (newValue) => {
       if (newValue) {
-        form.value = { ...newValue };
-      } else {
+      form.value = {
+        ...newValue,
+        PurchaseDate: formatDate(newValue.PurchaseDate), // 格式化進貨日期
+        ExpirationDate: formatDate(newValue.ExpirationDate), // 格式化過期日期
+      }}else {
         form.value = {
           StoreID: '',
           ProductID: '',

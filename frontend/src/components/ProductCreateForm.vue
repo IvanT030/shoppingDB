@@ -19,15 +19,10 @@
         </div>
   
         <div class="form-field">
-          <label>庫存：</label>
-          <input type="number" v-model="newProduct.stock" placeholder="請輸入庫存數量" />
+          <label>總銷售量：</label>
+          <input type="number" v-model="newProduct.sales" placeholder="請輸入銷售數量" />
         </div>
-  
-        <div class="form-field">
-          <label>銷售量：</label>
-          <input type="number" v-model="newProduct.salesVolume" placeholder="請輸入銷售量" />
-        </div>
-  
+
         <div class="form-buttons">
           <button type="button" class="btn-cancel" @click="closeForm">取消</button>
           <button type="submit" class="btn-save">確認</button>
@@ -50,8 +45,7 @@
           name: "",
           category: "",
           price: null,
-          stock: null,
-          salesVolume: null,
+          sales: null,
         },
       };
     },

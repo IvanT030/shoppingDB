@@ -1,90 +1,72 @@
 <template>
-    <DefaultPage pageTitle="單純展示join的地方" />
-    <button class="bak" @click="back">回主頁</button>
-    <table>
-      <thead>
-        <tr>
-          <th>店家編號</th>
-          <th>分店名稱</th>
-          <th>分店城市</th>
-          <th>商品編號</th>
-          <th>進貨數量</th>
-          <th>進貨日期</th>
-          <th>過期日期</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in joinList" :key="item.StoreID">
-          <td>{{ item.StoreID }}</td>
-          <td>{{ item.StoreName }}</td>
-          <td>{{ item.City }}</td>
-          <td>{{ item.ProductID }}</td>
-          <td>{{ item.Quantity }}</td>
-          <td>{{ item.PurchaseDate }}</td>
-          <td>{{ item.ExpirationDate }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <DefaultPage pageTitle="單純展示join的地方" />
+  <button class="bak" @click="back">回主頁</button>
+  <table>
+    <thead>
+      <tr>
+        <th>店家編號</th>
+        <th>分店名稱</th>
+        <th>分店城市</th>
+        <th>商品編號</th>
+        <th>進貨數量</th>
+        <th>進貨日期</th>
+        <th>過期日期</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="item in joinList" :key="item.StoreID">
+        <td>{{ item.StoreID }}</td>
+        <td>{{ item.StoreName }}</td>
+        <td>{{ item.City }}</td>
+        <td>{{ item.ProductID }}</td>
+        <td>{{ item.Quantity }}</td>
+        <td>{{ item.PurchaseDate }}</td>
+        <td>{{ item.ExpirationDate }}</td>
+      </tr>
+    </tbody>
+  </table>
 </template>
   
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'; // 加入 onMounted 确保在组件挂载时调用
+import axios from 'axios';
 import { useRouter } from 'vue-router';
 import DefaultPage from '@/components/DefaultPage.vue';
 
-const joinList = ref([])
-const router = useRouter()
+const joinList = ref([]); // 用于存储 join 的结果
+const router = useRouter();
 
-const back = () =>{
-    router.push({name: 'branch'})
-}
+// 返回主页方法
+const back = () => {
+  router.push({ name: 'branch' });
+};
 
-/*把purchase跟branch給他join起來，然後照sampleData的格式*/
-/*如果要加product的格式也可以*/
-try {
-    const sampleData = [
-    {
-        StoreName: '中正路分店', 
-        City: '台北',
-        StoreID: 1,
-        ProductID: 201,
-        Quantity: 50,
-        PurchaseDate: "2024-12-01",
-        ExpirationDate: "2025-01-01",
-    },
-    {
-        StoreName: '中正路分店', 
-        City: '台北',
-        StoreID: 1,
-        ProductID: 202,
-        Quantity: 30,
-        PurchaseDate: "2024-12-05",
-        ExpirationDate: "2025-01-10",
-    },
-    {
-        StoreName: '中正路分店', 
-        City: '台北',
-        StoreID: 1,
-        ProductID: 203,
-        Quantity: 20,
-        PurchaseDate: "2024-12-10",
-        ExpirationDate: "2025-02-01",
-    },
-    {
-        StoreName: '中正路分店', 
-        City: '台北',
-        StoreID: 1,
-        ProductID: 203,
-        Quantity: 20,
-        PurchaseDate: "2024-12-10",
-        ExpirationDate: "2025-02-01",
-    },];
+// 获取 join 数据
+const fetchJoin = async () => { 
+  try {
+    console.log('Fetching join data...');
+    const response = await axios.get('http://localhost/mytest/join');
+    console.log('Response Data:', response.data); // 确认返回的数据信息
 
-    joinList.value = sampleData;
-} catch (error) {
-  console.error(error);
-}
+    // 数据处理示例：直接映射到 joinList
+    joinList.value = response.data.map((purchase) => ({
+      StoreID: purchase.StoreID,
+      StoreName: purchase.StoreName,
+      City: purchase.City,
+      ProductID: purchase.ProductID,
+      Quantity: purchase.Quantity,
+      PurchaseDate: purchase.PurchaseDate, // Date 格式也可以做转换
+      ExpirationDate: purchase.ExpirationDate,
+    }));
+  } catch (error) {
+    console.error('Error fetching join data:', error); // 打印具体错误信息
+    alert('join不到啦');
+    back(); // 如果获取失败返回主页
+  }
+};
 
+// 确保组件挂载时调用 fetchJoin
+onMounted(fetchJoin);
 </script>
   
 <style>

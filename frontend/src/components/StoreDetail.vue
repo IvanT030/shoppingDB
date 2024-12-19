@@ -20,11 +20,6 @@
       </button>
     </div>
 
-    <!--進貨最多的商品-->
-    <br>
-    <h1>本店進貨最多商品</h1>
-    <p>{{mostProduct.name}}: {{mostProduct.Quantity}}件</p>
-
   </div>
 </template>
 
@@ -44,19 +39,6 @@
     },
   });
 
-  /* 這個在你的那個branch被改搬到父組件去了 實作方面到BranchView.vue
-  // 查看進貨清單（可擴展功能）
-  const viewRestockList = () => {
-    console.log(storeID); // 這裡可以連接進貨清單 API
-    alert('進貨清單功能尚未實現');
-  };
-
-  // 修改商品資訊（可擴展功能）
-  const editProducts = () => {
-    console.log('修改商品功能尚未實現'); // 這裡可以導航到商品編輯頁面
-    alert('修改商品功能尚未實現');
-  };
-  */
 </script>
 
 <style scoped>

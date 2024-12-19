@@ -8,8 +8,7 @@
         <img :src="product.image" alt="商品圖片" />
         <p>分類：{{ product.category }}</p>
         <p>價格：{{ product.price }} 元</p>
-        <p>庫存：{{ product.stock }}</p>
-        <p>銷售量：{{ product.salesVolume }}</p>
+        <p>總銷售量：{{ product.sales }} 件</p>
         <button type="button" class="btn-edit" v-on:click="edit()"> 修改 </button>
       </div>
 
@@ -17,10 +16,6 @@
         <div class="edit-field">
           <label>商品名稱：</label>
           <input type="text" v-model="newProduct.name" />
-        </div>
-
-        <div class="edit-field">
-          <img :src="newProduct.image" alt="商品圖片" />
         </div>
 
         <div class="edit-field">
@@ -34,13 +29,8 @@
         </div>
 
         <div class="edit-field">
-          <label>庫存：</label>
-          <input type="number" v-model="newProduct.stock" />
-        </div>
-
-        <div class="edit-field">
-          <label>銷售量：</label>
-          <input type="number" v-model="newProduct.salesVolume" />
+          <label>總銷售量：</label>
+          <input type="number" v-model="newProduct.sales" /> 件
         </div>
 
         <div class="edit-buttons">
@@ -80,11 +70,11 @@ export default {
       this.newProduct = null;
     },
     save(data) {
-  const cleanData = JSON.parse(JSON.stringify(data)); // 深拷貝，避免代理問題
-  this.$emit('saveData', cleanData); // 發送事件通知父組件更新數據
-  this.editing = false; // 結束編輯模式
-  this.newProduct = null;
-}
+    const cleanData = JSON.parse(JSON.stringify(data)); // 深拷貝，避免代理問題
+    this.$emit('saveData', cleanData); // 發送事件通知父組件更新數據
+    this.editing = false; // 結束編輯模式
+    this.newProduct = null;
+  }
 
   },
 };

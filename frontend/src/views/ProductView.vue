@@ -44,28 +44,25 @@
   const showCreateForm = ref(false);
 
   const fetchProducts = async () => {
-  try {
-    const response = await axios.get("http://localhost/mytest/products");
-    console.log("Response Data:", response.data);  // Log the entire response data
-    if (Array.isArray(response.data)) {
-      products.value = response.data.map(product => ({
-        id: product.ProductID,
-        name: product.ProductName,
-        category: product.Category,
-        price: product.Price,
-        stock: product.Stock,
-        salesVolume: product.SaleVolume
-      }));
-    } else {
-      console.error('Expected an array but received:', response.data);
+    try {
+      const response = await axios.get("http://localhost/mytest/products");
+      console.log("Response Data:", response.data);  // Log the entire response data
+      if (Array.isArray(response.data)) {
+        products.value = response.data.map(product => ({
+          id: product.ProductID,
+          name: product.ProductName,
+          category: product.Category,
+          price: product.Price,
+          sales: product.SalesVolume,
+        }));
+      } else {
+        console.error('Expected an array but received:', response.data);
+      }
+    } catch (error) {
+      alert('获取商品失败');
+      console.error("Fetch Products Error:", error.response || error.message);
     }
-  } catch (error) {
-    alert('获取商品失败');
-    console.error("Fetch Products Error:", error.response || error.message);
-  }
-};
-
-
+  };
 
   onMounted(fetchProducts);
 
@@ -81,37 +78,7 @@
     showCreateForm.value = false;
   };
 
-  const addProduct = async (newProduct) => {
-  const formattedProduct = {
-    ProductName: newProduct.name,
-    Category: newProduct.category,
-    Price: newProduct.price,
-    Stock: newProduct.stock,
-    SaleVolume: newProduct.salesVolume,
-  };
-
-  try {
-    const response = await axios.post("http://localhost/mytest/products", formattedProduct);
-    const createdProduct = response.data; // 從後端獲取返回的產品數據
-    products.value.push({
-      id: createdProduct.ProductID,
-      name: createdProduct.ProductName,
-      category: createdProduct.Category,
-      price: createdProduct.Price,
-      stock: createdProduct.Stock,
-      salesVolume: createdProduct.SalesVolume,
-    });
-    alert("商品新增成功！");
-  } catch (error) {
-    alert("商品新增失敗！");
-    console.error("Add Product Error:", error.response || error.message);
-  } finally {
-    closeCreateForm();
-  }
-};
-
-
-  const viewDetail = (product) => {
+    const viewDetail = (product) => {
     selectedProduct.value = product;
   };
 
@@ -119,17 +86,54 @@
     selectedProduct.value = null;
   };
 
+  const addProduct = async (newProduct) => {
+    const formattedProduct = {
+      ProductName: newProduct.name,
+      Category: newProduct.category,
+      Price: newProduct.price,
+      SalesVolume: newProduct.sales,
+    };
+
+    try {
+      if (!formattedProduct.ProductName || !formattedProduct.SalesVolume ||
+      !formattedProduct.Category || !formattedProduct.Price == null) {
+        alert("請填寫所有必要的欄位！");
+        return;
+      }
+      const response = await axios.post("http://localhost/mytest/products", formattedProduct);
+      const createdProduct = response.data; // 從後端獲取返回的產品數據
+      products.value.push({
+        id: createdProduct.ProductID,
+        name: createdProduct.ProductName,
+        category: createdProduct.Category,
+        price: createdProduct.Price,
+        sales: createdProduct.SalesVolume,
+      });
+      alert("商品新增成功！");
+    } catch (error) {
+      alert("商品新增失敗！");
+      console.error("Add Product Error:", error.response || error.message);
+    } finally {
+      closeCreateForm();
+    }
+  };
+
+  //更新Product
   const saveProduct = async (updatedProduct) => {
   const formattedProduct = {
     ProductID: updatedProduct.id,
     ProductName: updatedProduct.name,
     Category: updatedProduct.category,
     Price: updatedProduct.price,
-    Stock: updatedProduct.stock,
-    SaleVolume: updatedProduct.salesVolume,
+    SalesVolume: updatedProduct.sales,
   };
 
   try {
+    if (!formattedProduct.ProductID || !formattedProduct.ProductName || !formattedProduct.SalesVolume||
+      !formattedProduct.Category || formattedProduct.Price == null) {
+      alert("請填寫所有必要的欄位！");
+      return;
+    }
     await axios.put(`http://localhost/mytest/products/${formattedProduct.ProductID}`, formattedProduct);
     const index = products.value.findIndex((p) => p.id === updatedProduct.id);
     if (index !== -1) {
@@ -138,18 +142,16 @@
         name: formattedProduct.ProductName,
         category: formattedProduct.Category,
         price: formattedProduct.Price,
-        stock: formattedProduct.Stock,
-        salesVolume: formattedProduct.SaleVolume,
+        sales: formattedProduct.SalesVolume,
       });
     }
+    closeDetail();
     alert("商品更新成功！");
   } catch (error) {
     console.error("Save Product Error:", error.response || error.message);
     alert("商品更新失敗！");
   }
 };
-
-
 </script>
 
 <style>

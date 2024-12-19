@@ -16,42 +16,24 @@ $parsedUrl = parse_url($requestUri);
 $path = $parsedUrl['path'];
 $query = isset($parsedUrl['query']) ? $parsedUrl['query'] : '';
 
-// Check if the path is for a specific product or general products
-if (preg_match('/^\/products\/(\d+)$/', $path, $matches)) {
-    // Capture the product ID from the URL
-    $productId = $matches[1];
-
-    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        // Handle the GET request for a specific product
-        require_once __DIR__ . '/controllers/ProductController.php';
-        getProductByIdHandler($pdo, $productId); // Call the function to get the product by ID
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-        // Handle PUT request for updating the product
-        parse_str(file_get_contents("php://input"), $_PUT);
-        require_once __DIR__ . '/controllers/ProductController.php';
-
-        updateProductHandler($pdo, $productId, $_PUT); // Call the update function
-    } else {
-        http_response_code(405); // Method Not Allowed
-        echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
-    }
-} elseif ($path === '/products') {
-    // Handle general /products routes for GET (all products) or POST (add a new product)
-    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        require_once __DIR__ . '/controllers/ProductController.php';
-        getProductsHandler($pdo); // Directly call the controller function to get all products
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        require_once __DIR__ . '/controllers/ProductController.php';
-        addProductHandler($pdo); // Add a new product
-    } else {
-        http_response_code(405); // Method Not Allowed
-        echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
-    }
-} elseif ($path === '/purchases') {
+if (preg_match('/^\/products\/(\d+)$/', $path, $matches) || $path === '/products') {
+    require_once __DIR__ . '/routes/products.php';
+}elseif (preg_match('/^\/purchases\/(\d+)$/', $path, $matches) || $path === '/purchases') {
     require_once __DIR__ . '/routes/purchases.php';
 } elseif ($path === '/stores') {
     require_once __DIR__ . '/routes/stores.php';
-} else {
+} elseif ($path === '/join') {
+    require_once __DIR__ . '/models/join.php';
+} elseif (preg_match('/^\/mostPurchasedProduct\/(\d+)$/', $path, $matches)) {
+    $storeID = $matches[1]; // 提取 storeID
+    require_once __DIR__ . '/models/mostPurchasedProduct.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        getMostPurchasedProductHandler($pdo, $storeID);
+    } else {
+        http_response_code(405); // 方法不被允许
+        echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
+    }
+}else {
     http_response_code(404);
     echo json_encode(['status' => 'error', 'message' => '404 Not Found']);
 }
