@@ -3,9 +3,12 @@
     <form @submit.prevent="handleSubmit">
     <h2>{{ purchase?.PurchaseID ? '修改進貨記錄' : '新增進貨記錄' }}</h2>
     <label>
-        分店編號:
-        <input v-model="form.StoreID" type="number" required />
+        訂單編號:(選填)
+        <input v-model="form.PurchaseID" type="number" required />
     </label>
+    <p>
+      分店編號: {{ form.StoreID }}
+    </p>
     <label>
         商品編號:
         <input v-model="form.ProductID" type="number" required />
@@ -68,6 +71,7 @@
         ExpirationDate: formatDate(newValue.ExpirationDate), // 格式化過期日期
       }}else {
         form.value = {
+          PurchaseID: '',
           StoreID: '',
           ProductID: '',
           Quantity: '',

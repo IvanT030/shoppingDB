@@ -106,7 +106,7 @@ function updatePurchaseHandler($pdo, $purchaseId) {
 function deletePurchaseHandler($pdo, $purchaseId) {
     try {
         $result = deletePurchase($pdo, $purchaseId);
-        if ($result) {
+        if ($result) {  
             echo json_encode(['status' => 'success', 'message' => '進貨已刪除']);
         } else {
             http_response_code(404);

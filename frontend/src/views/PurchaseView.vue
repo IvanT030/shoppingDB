@@ -8,6 +8,7 @@
     <table>
       <thead>
         <tr>
+          <th>訂單編號</th>
           <th>店家編號</th>
           <th>商品編號</th>
           <th>進貨數量</th>
@@ -18,6 +19,7 @@
       </thead>
       <tbody>
         <tr v-for="purchase in purchaseList" :key="purchase.PurchaseID">
+          <td>{{ purchase.PurchaseID }}</td>
           <td>{{ purchase.StoreID }}</td>
           <td>{{ purchase.ProductID }}</td>
           <td>{{ purchase.Quantity }}</td>
@@ -98,7 +100,14 @@
   });
 
   const openCreateForm = () => {
-    currentPurchase.value = null;
+    currentPurchase.value = {
+      PurchaseID: '',
+      StoreID: storeID,
+      ProductID: '',
+      Quantity: '',
+      PurchaseDate: '',
+      ExpirationDate: '',
+    };
     createForm.value = true;
     showForm.value = true;
   };
@@ -144,7 +153,7 @@
       }
     } catch (error) {
       console.error("保存進貨錯誤:", error.response || error.message);
-      alert("保存進貨失敗！");
+      alert(error.response.data.message);
     }
 
     closeForm(); // 關閉表單
@@ -154,6 +163,7 @@
 
   // 刪除進貨
   const deletePurchase = async (purchaseID) => {
+    console.log(purchaseID)
     try {
       await axios.delete(`http://localhost/mytest/purchases/${purchaseID}`);
       alert("進貨刪除成功！");
