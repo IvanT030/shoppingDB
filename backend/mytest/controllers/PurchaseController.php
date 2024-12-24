@@ -83,7 +83,7 @@ function updatePurchaseHandler($pdo, $purchaseId) {
     }
 
     try {
-        // Call the updatePurchase function to perform the update
+        // Attempt to update purchase
         $result = updatePurchase($pdo, $purchaseId, $input);
 
         // Check if the update was successful
@@ -94,12 +94,20 @@ function updatePurchaseHandler($pdo, $purchaseId) {
             http_response_code(404);
             echo json_encode(['status' => 'error', 'message' => '進貨記錄不存在']);
         }
+    } catch (PDOException $e) {
+        // Handle the error and check if it's related to the trigger
+        if ($e->getCode() == '45000') { 
+            echo json_encode(['status' => 'error', 'message' => '觸發器錯誤：進貨數量不能為負']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => '無法更新進貨', 'details' => $e->getMessage()]);
+        }
     } catch (Exception $e) {
-        // Catch any exception and return an internal server error
+        // Catch other types of exceptions and return a generic error message
         http_response_code(500);
-        echo json_encode(['status' => 'error', 'message' => '無法更新進貨']);
+        echo json_encode(['status' => 'error', 'message' => '無法更新進貨', 'details' => $e->getMessage()]);
     }
 }
+
 
 
 // 刪除進貨
