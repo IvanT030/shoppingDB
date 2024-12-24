@@ -53,7 +53,7 @@
           name: product.ProductName,
           category: product.Category,
           price: product.Price,
-          sales: product.SalesVolume,
+          sales: product.SaleVolume,
         }));
       } else {
         console.error('Expected an array but received:', response.data);
@@ -78,7 +78,7 @@
     showCreateForm.value = false;
   };
 
-    const viewDetail = (product) => {
+  const viewDetail = (product) => {
     selectedProduct.value = product;
   };
 
@@ -91,24 +91,27 @@
       ProductName: newProduct.name,
       Category: newProduct.category,
       Price: newProduct.price,
-      SalesVolume: newProduct.sales,
+      SaleVolume: newProduct.sales,
     };
 
     try {
-      if (!formattedProduct.ProductName || !formattedProduct.SalesVolume ||
+      if (!formattedProduct.ProductName || !formattedProduct.SaleVolume ||
       !formattedProduct.Category || !formattedProduct.Price == null) {
         alert("請填寫所有必要的欄位！");
         return;
       }
       const response = await axios.post("http://localhost/mytest/products", formattedProduct);
+
       const createdProduct = response.data; // 從後端獲取返回的產品數據
+      console.log(createdProduct)
       products.value.push({
         id: createdProduct.ProductID,
         name: createdProduct.ProductName,
         category: createdProduct.Category,
         price: createdProduct.Price,
-        sales: createdProduct.SalesVolume,
+        sales: createdProduct.SaleVolume,
       });
+      console.log(products.value)
       alert("商品新增成功！");
     } catch (error) {
       alert("商品新增失敗！");
@@ -125,11 +128,12 @@
     ProductName: updatedProduct.name,
     Category: updatedProduct.category,
     Price: updatedProduct.price,
-    SalesVolume: updatedProduct.sales,
+    SaleVolume: updatedProduct.sales,
   };
+  console.log(formattedProduct)
 
   try {
-    if (!formattedProduct.ProductID || !formattedProduct.ProductName || !formattedProduct.SalesVolume||
+    if (!formattedProduct.ProductID || !formattedProduct.ProductName || !formattedProduct.SaleVolume||
       !formattedProduct.Category || formattedProduct.Price == null) {
       alert("請填寫所有必要的欄位！");
       return;
@@ -142,7 +146,7 @@
         name: formattedProduct.ProductName,
         category: formattedProduct.Category,
         price: formattedProduct.Price,
-        sales: formattedProduct.SalesVolume,
+        sales: formattedProduct.SaleVolume,
       });
     }
     closeDetail();

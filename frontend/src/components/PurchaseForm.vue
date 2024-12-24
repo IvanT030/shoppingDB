@@ -42,6 +42,7 @@
       default: null,
     },
   });
+  const storeID = props.purchase?.StoreID ?? null; // 修正 props 的讀取方式
 
   // 日期格式化函数：将 Date 对象转为 YYYY-MM-DD 格式
   const formatDate = (date) => {
@@ -55,7 +56,7 @@
 
   const form = ref({
     PurchaseID: '',
-    StoreID: '',
+    StoreID: storeID,
     ProductID: '',
     Quantity: '',
     PurchaseDate: '',
@@ -72,7 +73,7 @@
       }}else {
         form.value = {
           PurchaseID: '',
-          StoreID: '',
+          StoreID: storeID,
           ProductID: '',
           Quantity: '',
           PurchaseDate: '',

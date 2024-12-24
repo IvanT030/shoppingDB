@@ -34,7 +34,7 @@ function addProductHandler($pdo) {
     $input = json_decode(file_get_contents('php://input'), true);
 
     // 驗證必要欄位
-    if (!isset($input['ProductName'], $input['Category'], $input['Price'], $input['SalesVolume'])) {
+    if (!isset($input['ProductName'], $input['Category'], $input['Price'], $input['SaleVolume'])) {
         http_response_code(400);
         echo json_encode(['status' => 'error', 'message' => '缺少必要的欄位']);
         return;
@@ -54,7 +54,7 @@ function updateProductHandler($pdo, $productId) {
     $input = json_decode(file_get_contents('php://input'), true);
 
     // 驗證必要欄位
-    if (!isset($input['ProductName'], $input['Category'], $input['Price'], $input['SalesVolume'])) {
+    if (!isset($input['ProductName'], $input['Category'], $input['Price'], $input['SaleVolume'])) {
         http_response_code(400);
         echo json_encode(['status' => 'error', 'message' => '缺少必要的欄位']);
         return;

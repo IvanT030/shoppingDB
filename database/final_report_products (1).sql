@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-12-24 19:49:45
--- 伺服器版本： 10.4.28-MariaDB
--- PHP 版本： 8.2.4
+-- 產生時間： 2024-12-24 21:02:31
+-- 伺服器版本： 10.4.32-MariaDB
+-- PHP 版本： 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -42,11 +42,11 @@ CREATE TABLE `product` (
 
 INSERT INTO `product` (`ProductID`, `ProductName`, `Category`, `Price`, `Stock`, `SaleVolume`) VALUES
 (1, '雷碧', '飲料', 120, 60, 20),
-(2, '可壞', 'Beverage', 29, 8, 2),
+(2, '可壞', 'Beverage', 29, 8, 3),
 (3, '奇多隨口脆', 'snack', 10, 30, 0),
 (4, '統一科學麵40g', 'snack', 10, 25, 5),
 (5, '義美巧克力小泡芙', 'snack', 20, 47, 3),
-(13, '123', '123', 12, 123, 123),
+(13, '可爾必取', '飲料', 77, 123, 7),
 (14, '1234', '1234', 1223, 12, 12);
 
 -- --------------------------------------------------------
@@ -69,14 +69,15 @@ CREATE TABLE `purchases` (
 --
 
 INSERT INTO `purchases` (`PurchaseID`, `ProductID`, `StoreID`, `Quantity`, `PurchaseDate`, `ExpirationDate`) VALUES
-(1, 1, 11, 50, '2024-12-25', '2025-12-25'),
+(1, 3, 11, 70, '2024-12-30', '2025-01-11'),
 (12, 13, 33, 20, '2024-11-01', '2026-01-24'),
 (23, 2, 22, 30, '2024-11-01', '2024-11-30'),
 (34, 3, 33, 30, '2024-11-01', '2024-11-30'),
 (45, 4, 44, 50, '2024-11-20', '2024-12-19'),
 (53, 14, 11, 30, '2024-03-19', '2033-12-12'),
 (56, 5, 55, 50, '2024-11-20', '2024-12-19'),
-(69, 1, 11, 20, '2024-11-01', '2024-11-30');
+(69, 1, 11, 20, '2024-11-01', '2024-11-30'),
+(70, 2, 11, 7, '2024-12-25', '2025-01-09');
 
 --
 -- 觸發器 `purchases`
@@ -147,7 +148,13 @@ ALTER TABLE `stores`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `product`
 --
 ALTER TABLE `product`
-  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `purchases`
+--
+ALTER TABLE `purchases`
+  MODIFY `PurchaseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- 已傾印資料表的限制式

@@ -97,6 +97,7 @@ function updatePurchaseHandler($pdo, $purchaseId) {
     } catch (PDOException $e) {
         // Handle the error and check if it's related to the trigger
         if ($e->getCode() == '45000') { 
+            http_response_code(404);
             echo json_encode(['status' => 'error', 'message' => '觸發器錯誤：進貨數量不能為負']);
         } else {
             echo json_encode(['status' => 'error', 'message' => '無法更新進貨', 'details' => $e->getMessage()]);

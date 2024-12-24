@@ -15,14 +15,14 @@ function getProductById($pdo, $productId) {
 // 添加新商品
 function addProduct($pdo, $input) {
     $stmt = $pdo->prepare("
-        INSERT INTO product (ProductName, Category, Price, SalesVolume)
-        VALUES (:ProductName, :Category, :Price, :SalesVolume)
+        INSERT INTO product (ProductName, Category, Price, SaleVolume)
+        VALUES (:ProductName, :Category, :Price, :SaleVolume)
     ");
     $stmt->execute([
         ':ProductName' => $input['ProductName'],
         ':Category' => $input['Category'],
         ':Price' => $input['Price'],
-        ':SalesVolume' => $input['SalesVolume'],
+        ':SaleVolume' => $input['SaleVolume'],
     ]);
 
     return [
@@ -30,7 +30,7 @@ function addProduct($pdo, $input) {
         'ProductName' => $input['ProductName'],
         'Category' => $input['Category'],
         'Price' => $input['Price'],
-        ':SalesVolume' => $input['SalesVolume'],
+        'SaleVolume' => $input['SaleVolume'],
     ];
 }
 
@@ -41,7 +41,7 @@ function updateProduct($pdo, $productId, $input) {
         SET ProductName = :ProductName,
             Category = :Category,
             Price = :Price,
-            SalesVolume = :SalesVolume
+            SaleVolume = :SaleVolume
         WHERE ProductID = :ProductID
     ");
     $stmt->execute([
@@ -49,7 +49,7 @@ function updateProduct($pdo, $productId, $input) {
         ':Category' => $input['Category'],
         ':Price' => $input['Price'],
         ':ProductID' => $productId,
-        ':SalesVolume' => $input['SalesVolume'],
+        ':SaleVolume' => $input['SaleVolume'],
     ]);
 
     return $stmt->rowCount() > 0; // 返回是否有影響的行數

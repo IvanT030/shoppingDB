@@ -145,11 +145,13 @@
         alert("進貨新增成功！");
       } else {
         // 修改進貨
+        console.log(purchase)
         const response = await axios.put(
           `http://localhost/mytest/purchases/${purchase.PurchaseID}`,
           purchase
         );
-        alert("進貨修改成功！");
+        console.log(response)
+        //alert("進貨修改成功！");
       }
     } catch (error) {
       console.error("保存進貨錯誤:", error.response || error.message);

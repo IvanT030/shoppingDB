@@ -39,7 +39,7 @@
         required: true,
       },
     },
-    data() {
+    data() {  
       return {
         newProduct: {
           name: "",

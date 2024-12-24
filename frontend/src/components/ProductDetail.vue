@@ -5,7 +5,6 @@
       
       <div v-if="!editing">
         <h2>{{ product.name }}</h2>
-        <img :src="product.image" alt="商品圖片" />
         <p>分類：{{ product.category }}</p>
         <p>價格：{{ product.price }} 元</p>
         <p>總銷售量：{{ product.sales }} 件</p>
