@@ -41,6 +41,8 @@ function updatePurchase($pdo, $purchaseId, $input) {
             ExpirationDate = :ExpirationDate
         WHERE PurchaseID = :PurchaseID
     ");
+    
+    // Execute the query with the provided input data
     $stmt->execute([
         ':StoreID' => $input['StoreID'],
         ':ProductID' => $input['ProductID'],
@@ -50,13 +52,15 @@ function updatePurchase($pdo, $purchaseId, $input) {
         ':PurchaseID' => $purchaseId,
     ]);
 
+    // Return whether any rows were affected (if the update was successful)
     return $stmt->rowCount() > 0;
 }
 
 // 刪除進貨
 function deletePurchase($pdo, $purchaseId) {
-    $stmt = $pdo->prepare("DELETE FROM purchases WHERE `PurchaseID = ?");
+    // Corrected SQL statement with closing quote
+    $stmt = $pdo->prepare("DELETE FROM purchases WHERE PurchaseID = ?");
     $stmt->execute([$purchaseId]);
-    return $stmt->rowCount() > 0;
+    return $stmt->rowCount() > 0; // Check if a row was affected
 }
 ?>

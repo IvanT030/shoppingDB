@@ -2,7 +2,7 @@
 $host = 'localhost';
 $dbname = 'final_report_products'; // Your database name
 $user = 'root';                   // MySQL username
-$password = '091283746509';                   // MySQL password
+$password = '';                   // MySQL password
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);

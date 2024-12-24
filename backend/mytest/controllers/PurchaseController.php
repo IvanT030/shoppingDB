@@ -17,19 +17,57 @@ function getAllPurchasesHandler($pdo, $storeId) {
 function addPurchaseHandler($pdo) {
     $input = json_decode(file_get_contents('php://input'), true);
 
-    // 驗證必要欄位
-    if (!isset($input['StoreID'], $input['ProductID'], $input['Quantity'], $input['PurchaseDate'], $input['ExpirationDate'])) {
+    // Validate the required fields (including PurchaseID)
+    if (!isset($input['PurchaseID'], $input['StoreID'], $input['ProductID'], $input['Quantity'], $input['PurchaseDate'], $input['ExpirationDate'])) {
         http_response_code(400);
-        echo json_encode(['status' => 'error', 'message' => '缺少必要的欄位']);
+        echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
         return;
     }
 
+    // Prepare the query to insert a new purchase
     try {
-        $newPurchase = addPurchase($pdo, $input);
+        // Check if the provided PurchaseID already exists
+        $stmt = $pdo->prepare("SELECT * FROM purchases WHERE PurchaseID = :PurchaseID");
+        $stmt->execute([':PurchaseID' => $input['PurchaseID']]);
+        $existingPurchase = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($existingPurchase) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'PurchaseID already exists']);
+            return;
+        }
+
+        // Proceed with the insert if PurchaseID is unique
+        $stmt = $pdo->prepare("
+            INSERT INTO purchases (PurchaseID, StoreID, ProductID, Quantity, PurchaseDate, ExpirationDate)
+            VALUES (:PurchaseID, :StoreID, :ProductID, :Quantity, :PurchaseDate, :ExpirationDate)
+        ");
+
+        // Execute the query with the input data
+        $stmt->execute([
+            ':PurchaseID' => $input['PurchaseID'],  // Insert manually provided PurchaseID
+            ':StoreID' => $input['StoreID'],
+            ':ProductID' => $input['ProductID'],
+            ':Quantity' => $input['Quantity'],
+            ':PurchaseDate' => $input['PurchaseDate'],
+            ':ExpirationDate' => $input['ExpirationDate']
+        ]);
+
+        // Fetch the inserted data to return in the response
+        $newPurchase = [
+            'PurchaseID' => $input['PurchaseID'],  // Use the provided PurchaseID
+            'StoreID' => $input['StoreID'],
+            'ProductID' => $input['ProductID'],
+            'Quantity' => $input['Quantity'],
+            'PurchaseDate' => $input['PurchaseDate'],
+            'ExpirationDate' => $input['ExpirationDate']
+        ];
+
+        // Return the newly created purchase as a JSON response
         echo json_encode($newPurchase);
     } catch (Exception $e) {
         http_response_code(500);
-        echo json_encode(['status' => 'error', 'message' => '無法新增進貨']);
+        echo json_encode(['status' => 'error', 'message' => 'Error adding purchase']);
     }
 }
 
@@ -37,6 +75,7 @@ function addPurchaseHandler($pdo) {
 function updatePurchaseHandler($pdo, $purchaseId) {
     $input = json_decode(file_get_contents('php://input'), true);
 
+    // Validate the required fields
     if (!isset($input['StoreID'], $input['ProductID'], $input['Quantity'], $input['PurchaseDate'], $input['ExpirationDate'])) {
         http_response_code(400);
         echo json_encode(['status' => 'error', 'message' => '缺少必要的欄位']);
@@ -44,18 +83,24 @@ function updatePurchaseHandler($pdo, $purchaseId) {
     }
 
     try {
+        // Call the updatePurchase function to perform the update
         $result = updatePurchase($pdo, $purchaseId, $input);
+
+        // Check if the update was successful
         if ($result) {
             echo json_encode(['status' => 'success', 'message' => '進貨更新成功']);
         } else {
+            // If no rows were affected, return a 404 (not found) response
             http_response_code(404);
             echo json_encode(['status' => 'error', 'message' => '進貨記錄不存在']);
         }
     } catch (Exception $e) {
+        // Catch any exception and return an internal server error
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => '無法更新進貨']);
     }
 }
+
 
 // 刪除進貨
 function deletePurchaseHandler($pdo, $purchaseId) {

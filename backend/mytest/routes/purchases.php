@@ -16,10 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if (preg_match('/^\/purchases\/(\d+)$/', $path, $matches)) {
     $purchaseId = $matches[1];
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-        // 更新進貨
-        parse_str(file_get_contents("php://input"), $_PUT);
-        updatePurchaseHandler($pdo, $purchaseId, $_PUT);
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+        // Read the raw POST data (which should be in JSON format)
+        $input = json_decode(file_get_contents("php://input"), true);
+    
+        // Call the update function with the decoded input data
+        updatePurchaseHandler($pdo, $purchaseId, $input);
+    }
+    
+     elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         // 刪除進貨
         deletePurchaseHandler($pdo, $purchaseId);
     } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
